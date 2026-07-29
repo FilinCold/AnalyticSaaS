@@ -1,0 +1,29 @@
+# Dependencies / build
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+credentials*
+*secret*
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Local tooling indexes (not product source)
+.codegraph/
+.codegraph.db
+
+# Optional local kit (not MVP app)
+STARTER_KIT/

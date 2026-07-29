@@ -1,0 +1,30 @@
+---
+description: Навигатор проекта AnalyticSaaS — агент читает при каждой сессии
+alwaysApply: true
+---
+
+# AnalyticSaaS (AnalyticProject)
+
+## Что за проект
+
+AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; код не начат.
+
+## Стек и где что
+
+| Часть | Стек | Папка |
+|---|---|---|
+| Код | Next.js+TS+Prisma+PG (предложение) | `AnalyticProject/` |
+| SSOT требований/архитектуры | — | `docs/` |
+| Kickoff/прогресс | — | `project_context/` |
+
+## Активный план
+
+**Фаза:** ожидание команды на реализацию F0  
+**Статус:** [`project_context/04_STATE.md`](project_context/04_STATE.md)  
+**Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md)
+
+## Правила
+
+- План → согласование → код. Без одобрения не реализовывать.
+- Не расширять scope за `docs/MVP_SCOPE.md` / `docs/NON_GOALS.md`.
+- Один факт — один файл. Прогресс — только `04_STATE.md`.
