@@ -1,13 +1,56 @@
 # STATE — где мы остановились
 
-**Проект/фича:** AnalyticSaaS — **F1-02 DONE**; следующий шаг **F2-01 Research model**
-**Последнее обновление:** `2026-07-29` — F1-02: middleware + `/api/me` + `(app)` guard; T1–T4 green
+**Проект/фича:** AnalyticSaaS — **F2-03 DONE**; следующий шаг **F3-01 Signal model**  
+**Последнее обновление:** `2026-07-30` — UI на русском; pivot + F2-03; next F3-01; uncommitted на `TASK-2@feat_research`
+
+## Как проверить текущие правки (owner)
+
+Dev должен быть на **:3010** (`cd AnalyticProject && npm run dev`). Health: `curl http://localhost:3010/api/health` → `{"ok":true}`.
+
+### A. Автотесты
+
+```bash
+cd AnalyticProject
+npm run lint && npm test && npm run build
+```
+
+Ожидание: lint OK; **35** tests passed; build с роутами `/ideas`, `/api/ideas`, `/researches/*`.
+
+### B. Браузер — pivot + F2-03 (главное) · UI на русском
+
+1. Открой http://localhost:3010/login → войди (или зарегистрируй нового).
+2. После входа должен открыться **`/ideas`** (не `/researches`).
+3. На странице: заголовок **Идеи**, статистика (Рекомендованные/Суженные/Исключённые = 0, Обновлено = Ещё нет), empty state про появление идей, без CTA «создать исследование».
+4. В шапке: **Идеи** primary, **Исследования** secondary, **Выйти**.
+5. Анонимно открой http://localhost:3010/ideas → редирект на login с `callbackUrl=/ideas`.
+6. Страницы **Вход** / **Регистрация** — тексты на русском.
+
+### C. Secondary Research (F2-02 ещё жив)
+
+1. Из Идеи → «исследования» / nav **Исследования** → `/researches`.
+2. **Новое исследование** → название + тема → Создать → detail с плейсхолдерами Сигналы/Идеи.
+3. Список показывает созданную запись (колонки на русском).
+
+### D. API smoke (опционально)
+
+```bash
+curl -s -b cookies.txt http://localhost:3010/api/ideas
+# → {"ideas":[],"stats":{…zeros…}}
+
+curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авторизован»
+```
+
+### E. Что ещё не проверяем (нормально)
+
+Идей в ленте нет до F3–F6. Pipeline/адаптеры не запущены. T5 owner Flow A — только шаги 1–2 (вход → лента).
+
+---
 
 ## Как продолжить в новом чате
 
 **Для реализации (когда будет команда):**
 
-> Прочитай `project_context/04_STATE.md`. Начни реализацию `project_context/features/03-research/01-model-crud/STEP.md`. Код только по этому шагу.
+> Прочитай `project_context/04_STATE.md` и `docs/DECISIONS.md` § 2026-07-30. Начни реализацию `project_context/features/04-signals/01-manual-signal/STEP.md` (signals → **system feed**). Код только по этому шагу.
 
 **Для ревью плана:**
 
@@ -21,7 +64,7 @@
 ### ✅ Сделано
 
 1. **Аудит доков** — коллизии в `docs/DECISIONS.md`.
-2. **Дерево features** — 9 эпиков, 24 шага.
+2. **Дерево features** — 9 эпиков, 24+ шага (+ F2-03).
 3. **Детализация R4** — все `STEP.md` расширены: подзадачи, «Не входит», API/поля, тест-кейсы, блокеры.
 4. **Подшаги** — 15 вложенных карточек в F0-01, F0-03, F1-01, F5-03, F6-02.
 5. **Новые SSOT:** `docs/API.md`, `docs/LLM_CONTRACT.md`, `docs/IDEA_CARD_SPEC.md`.
@@ -35,14 +78,18 @@
 13. **F0-03** — Inngest job runner; hello job enqueue/process; `INNGEST_DEV=1`; lint/test/build OK.
 14. **F1-01** — Auth.js Credentials + JWT (без PrismaAdapter); User schema; register/login/logout/session; UI; T7 browser OK.
 15. **F1-02** — API protection: middleware, `getSessionUser`/`requireAuth`, `GET /api/me`, `(app)` layout; T1–T4 OK.
+16. **F2-01** — Research Prisma model; zod validation; CRUD `/api/researches`; ownership 404; T1–T7 OK.
+17. **F2-02** — Research UI secondary; T1–T4 smoke OK.
+18. **UX pivot 2026-07-30** — лента идей (news-portal); Research = internal system feed; SSOT обновлён.
+19. **F2-03** — `/ideas` feed shell + stats + `GET /api/ideas` stub; login→ideas; T1–T4 OK.
 
 ### ⏳ Следующая задача
 
-**F2-01 — Модель Research:** `project_context/features/03-research/01-model-crud/STEP.md`
+**F3-01 — Signal model + manual create (system feed):** `project_context/features/04-signals/01-manual-signal/STEP.md`
 
 ### ❌ Не начато
 
-- F2-01 Research model (следующий), F2+, остальные шаги.
+- F3-01 Signals (следующий), F3+, остальные шаги.
 
 ## Прогресс F0-01 (каркас приложения)
 
@@ -146,10 +193,71 @@
 | T2 | GET `/api/me` с session | ✅ 200 |
 | T3 | anonymous page → `/login?callbackUrl=` | ✅ |
 | T4 | matcher не трогает login/auth/health | ✅ |
-| T5 | POST research без cookie | ⏳ после F2-01 |
+| T5 | POST research без cookie | ✅ (F2-01 T7) |
 
 **Проверено** `2026-07-29`: `npm test` 23 passed; lint/build OK.  
 **Note:** Next 16 warns middleware→proxy; оставили `middleware.ts` по STEP. Auth split: `auth.config.ts` (edge) + `auth.ts` (Credentials/Prisma).
+
+## Прогресс F2-01 (Research model + CRUD)
+
+| Подзадача | Статус | Проверка |
+|---|---|---|
+| Prisma model | ✅ DONE | `Research` + migrate `add_researches` |
+| Validation | ✅ DONE | `src/lib/validation/research.ts` (zod) |
+| API routes | ✅ DONE | list/create + get/patch by id |
+| Ownership | ✅ DONE | чужой id → 404 |
+| tests | ✅ DONE | `research.api.test.ts` T1–T7 |
+
+**Тест-кейсы F2-01:**
+
+| # | Сценарий | Статус |
+|---|---|---|
+| T1 | POST create valid | ✅ 201, status=draft |
+| T2 | POST без title | ✅ 400 |
+| T3 | GET list | ✅ только свои |
+| T4 | GET чужой id | ✅ 404 |
+| T5 | PATCH свой | ✅ 200 |
+| T6 | PATCH чужой | ✅ 404 |
+| T7 | Аноним POST | ✅ 401 |
+
+**Проверено** `2026-07-30`: migrate deploy; `vitest -t research` 7/7; full suite 30 passed; lint/build OK.
+
+## Прогресс F2-02 (Research UI list/create)
+
+| Подзадача | Статус | Проверка |
+|---|---|---|
+| App layout / header nav | ✅ DONE | `(app)` session + `AppHeader` Researches |
+| List page | ✅ DONE | SSR prisma; table + empty state |
+| Create flow | ✅ DONE | `/researches/new` + `ResearchForm` |
+| Detail shell | ✅ DONE | fields + Signals/Ideas placeholders |
+| 404 ownership | ✅ DONE | `not-found.tsx` |
+| keywords helper + unit tests | ✅ DONE | `keywords.test.ts` |
+
+**Тест-кейсы F2-02:**
+
+| # | Сценарий | Статус |
+|---|---|---|
+| T1 | List пустой | ✅ empty state HTML |
+| T2 | Create valid | ✅ detail shows title/topic |
+| T3 | Create без title | ✅ HTML required + API 400 |
+| T4 | Чужой/missing id | ✅ 404 page |
+| T5 | Manual Flow A 1–2 | ⏳ owner checklist |
+
+**Проверено** `2026-07-30`: lint OK; `npm test` 33 passed; build OK (routes `/researches`, `/new`, `/[researchId]`); HTTP smoke T1–T4.
+
+## Прогресс F2-03 (Ideas feed shell)
+
+| Подзадача | Статус | Проверка |
+|---|---|---|
+| `/ideas` page + stats | ✅ DONE | empty feed, no create Research CTA |
+| `GET /api/ideas` stub | ✅ DONE | auth + empty stats |
+| login/register → `/ideas` | ✅ DONE | callbackUrl |
+| Nav Ideas primary | ✅ DONE | Researches secondary |
+| middleware `/ideas` | ✅ DONE | |
+
+**Тест-кейсы F2-03:** T1–T4 ✅; T5 ⏳ owner — см. «Как проверить текущие правки» § B
+
+**Проверено** `2026-07-30`: lint OK; `npm test` 35 passed; build OK (`/ideas`, `/api/ideas`). Owner checklist в шапке STATE.
 
 ## Код в `AnalyticProject/`
 
@@ -163,6 +271,7 @@
 | Prisma | 6.19.x |
 | Inngest | 4.13.x |
 | Auth.js | next-auth@5 beta.32 |
+| Zod | 3.25.x |
 | Scripts | `dev`, `build`, `start`, `lint`, `test`, `db:migrate`, `db:generate`, `inngest:dev` |
 
 **Ключевые файлы (созданы):**
@@ -172,6 +281,8 @@
 - `src/lib/prisma.ts`, `src/lib/prisma.test.ts`
 - `src/lib/inngest/client.ts`
 - `src/lib/auth/*` (password, register, credentials, errors, get-session, guard)
+- `src/lib/validation/research.ts`
+- `src/lib/research/serialize.ts`
 - `src/auth.ts`, `src/auth.config.ts`, `src/types/next-auth.d.ts`
 - `src/middleware.ts`
 - `src/jobs/hello.ts`, `src/jobs/hello.job.test.ts`, `src/jobs/index.ts`
@@ -179,16 +290,23 @@
 - `src/app/api/dev/trigger-hello/route.ts`, `route.test.ts`
 - `src/app/api/auth/{register,login,logout,session,[...nextauth]}/`
 - `src/app/api/me/route.ts`
+- `src/app/api/researches/route.ts`, `[researchId]/route.ts`, `research.api.test.ts`
 - `src/app/(auth)/{login,register}/page.tsx`
-- `src/app/(app)/layout.tsx`, `src/app/(app)/researches/page.tsx`
+- `src/app/(app)/layout.tsx`, `src/app/(app)/ideas/page.tsx`
+- `src/app/(app)/researches/page.tsx`
+- `src/app/(app)/researches/new/page.tsx`
+- `src/app/(app)/researches/[researchId]/page.tsx`, `not-found.tsx`
+- `src/app/api/ideas/route.ts`, `ideas.api.test.ts`
 - `src/components/{app-header,logout-button}.tsx`
+- `src/components/research/ResearchForm.tsx`
+- `src/lib/research/{serialize,keywords}.ts`
 - `prisma/schema.prisma`, `prisma/migrations/`
 - `docker-compose.yml`
 - `src/app/layout.tsx`, `src/app/page.tsx`
 - `src/app/api/health/route.ts`, `route.test.ts`
 - `README.md`, `.env.example`
 
-**Ещё нет:** `src/domain/` (F4), Research CRUD (F2)
+**Ещё нет:** Signals (F3), `src/domain/` (F4)
 
 ## Фазы проекта
 
@@ -205,18 +323,24 @@
 | **F0-03 Job runner** | **✅ DONE** | `2026-07-29` |
 | **F1-01 Auth** | **✅ DONE** | `2026-07-29` |
 | **F1-02 API protection** | **✅ DONE** | `2026-07-29` |
-| F2-01 Research model | ⏳ TODO | следующий шаг |
-| F2+ | ❌ | после F2-01 |
+| **F2-01 Research model** | **✅ DONE** | internal container |
+| **F2-02 Research UI** | **✅ DONE** | secondary |
+| **F2-03 Ideas feed shell** | **✅ DONE** | `2026-07-30` pivot |
+| F3-01 Signal model | ⏳ TODO | следующий шаг |
+| F3+ / F4+ | ❌ | после F3-01 |
 
 ## Внешние гейты / блокеры
 
 - F3-02: три адаптера (HN → PH → Reddit) — больше работы, чем в исходном F3-02 «один адаптер».
-- Git: `git@github.com:FilinCold/AnalyticSaaS.git`, ветка `main` (`9dba64f`), tracking `origin/main`.
+- Git: `git@github.com:FilinCold/AnalyticSaaS.git`
+  - `main` / `develop` @ `8eb9859` (merge PR #1 auth)
+  - рабочая ветка: `TASK-2@feat_research` (F2 + pivot F2-03 **ещё не закоммичен**)
+- Диск: следить за свободным местом — при ENOSPC чистить sandbox-cache / лишние `node_modules`.
 
 ## Текущий следующий шаг
 
-**F2-01 Research model:**  
-`project_context/features/03-research/01-model-crud/STEP.md`
+**F3-01 Signal model (system feed):**  
+`project_context/features/04-signals/01-manual-signal/STEP.md`
 
 ## Доска статусов
 
@@ -232,8 +356,11 @@
 | F0-03 | Job runner | **DONE** | 2026-07-29 |
 | F1-01 | Auth register/login | **DONE** | 2026-07-29 |
 | F1-02 | API protection | **DONE** | 2026-07-29 |
-| F2-01 | Research model | TODO | — |
-| 01–09 | Реализация по features/ | IN PROGRESS | F1-02 DONE |
+| F2-01 | Research model | **DONE** | 2026-07-30 |
+| F2-02 | Research UI (secondary) | **DONE** | 2026-07-30 |
+| F2-03 | Ideas feed shell | **DONE** | 2026-07-30 |
+| F3-01 | Signal model | TODO | — |
+| 01–09 | Реализация по features/ | IN PROGRESS | F2-03 DONE |
 
 ## Журнал
 
@@ -251,3 +378,11 @@
 - `2026-07-29` — **F1-01:** Auth.js Credentials; User migrate; `/login` `/register`; session API; **F1-01 закрыт**.
 - `2026-07-29` — **F1-01 verify:** browser OK; убран PrismaAdapter; note «после prisma migrate — рестарт dev».
 - `2026-07-29` — **F1-02:** middleware + `/api/me` + helpers + `(app)` layout; edge `auth.config`; T1–T4; **F1-02 закрыт**.
+- `2026-07-30` — **F2-01:** Research model + zod + CRUD API; migrate `add_researches`; T1–T7; **F2-01 закрыт**.
+- `2026-07-30` — **STATE sync:** ветка `TASK-2@feat_research`; next = F2-02; F2-01 uncommitted.
+- `2026-07-30` — **F2-02:** Research list/create/detail UI; keywords helper; T1–T4 smoke; **F2-02 закрыт**.
+- `2026-07-30` — Синхрон README фич: 01/02/03; step-TEMPLATE: обновлять README фичи.
+- `2026-07-30` — **UX pivot:** лента идей (news-portal); SSOT VISION/MVP/Flows/API/DOMAIN/ROADMAP/DECISIONS.
+- `2026-07-30` — **F2-03:** `/ideas` shell + API stub; login→ideas; **F2-03 закрыт**; next = F3-01.
+- `2026-07-30` — STATE: добавлен owner verify checklist (A–E) для pivot + F2.
+- `2026-07-30` — UI + user-facing API errors переведены на русский (`lang=ru`).

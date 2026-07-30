@@ -8,14 +8,17 @@ export default function Home() {
           AnalyticSaaS
         </h1>
         <p className="text-lg text-zinc-600 dark:text-zinc-400">
-          AI-assisted micro-SaaS idea discovery
+          Поиск коммерчески проверяемых идей micro-SaaS
         </p>
         <div className="mt-2 flex gap-4 text-sm">
+          <Link href="/ideas" className="underline underline-offset-2">
+            Лента идей
+          </Link>
           <Link href="/login" className="underline underline-offset-2">
-            Log in
+            Вход
           </Link>
           <Link href="/register" className="underline underline-offset-2">
-            Register
+            Регистрация
           </Link>
         </div>
       </main>

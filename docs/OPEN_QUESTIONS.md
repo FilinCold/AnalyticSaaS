@@ -4,13 +4,15 @@
 
 ## Открытые (нужно до/во время реализации)
 
-_(пусто — блокеры MVP закрыты `2026-07-29`, см. `DECISIONS.md` § «Стек MVP»)_
+_(пусто — блокеры MVP закрыты; UX pivot `2026-07-30` зафиксирован в `DECISIONS.md`)_
 
 ## Открытые (можно после MVP)
 
 - [ ] **Какие именно форумы** четвёртым+ адаптером (после HN / Product Hunt / Reddit).
 - [ ] Биллинг AnalyticSaaS (не планируется для solo-MVP).
-- [ ] Настройка интервала автообновления пользователем (в MVP фиксировано 3 дня).
+- [ ] Настройка интервала автообновления пользователем (в MVP фиксировано 3 дня; UX-окно 3–5).
+- [ ] Персональные фильтры ленты по нише/тегам.
+- [ ] Закладки / «мои идеи» per-user поверх общего каталога.
 
 ## Противоречия
 
@@ -36,5 +38,6 @@ _(активных нет)_
 - [x] `2026-07-29` — Формулы One Job / AI Buildability / First Sale / Opportunity.
 - [x] `2026-07-29` — Семантика `buildTimeConfidence`, `riskOfDeveloperHelp`, формат `fourteenDayBuildPlan`.
 - [x] `2026-07-29` — Триггеры pipeline: initial, manual, scheduled (3 дня).
+- [x] `2026-07-30` — **UX pivot:** лента идей (news-portal), без обязательного user Research; Research = system feed (`DECISIONS.md`).
 
 Закрытые коллизии: порог сигналов, vertical slice vs cron, `succeeded`, rate limit, UI `narrowed`, go/kill, `source_type`, `PipelineRun.trigger`, LLM vs F4 scoring.

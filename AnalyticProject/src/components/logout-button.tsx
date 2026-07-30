@@ -25,7 +25,7 @@ export function LogoutButton() {
       disabled={pending}
       className="text-sm text-zinc-600 underline underline-offset-2 disabled:opacity-60 dark:text-zinc-400"
     >
-      {pending ? 'Signing out…' : 'Log out'}
+      {pending ? 'Выход…' : 'Выйти'}
     </button>
   );
 }

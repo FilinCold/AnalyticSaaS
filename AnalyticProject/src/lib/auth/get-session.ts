@@ -20,7 +20,7 @@ export async function requireAuth(): Promise<AuthUser | Response> {
   const user = await getSessionUser();
 
   if (!user) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    return Response.json({ error: 'Не авторизован' }, { status: 401 });
   }
 
   return user;

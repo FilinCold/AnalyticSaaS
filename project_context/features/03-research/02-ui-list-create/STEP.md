@@ -1,9 +1,11 @@
 # Шаг F2-02 — UI Research list/create
 
-**Статус:** TODO  
+**Статус:** DONE (secondary UI; primary UX → F2-03)  
 **Слой:** Frontend  
 **Зависит от:** `01-model-crud`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F2-02) · **Фича:** `03-research`
+
+> **2026-07-30 pivot:** этот шаг больше не Flow A 1–2. Home = Ideas feed (`03-ideas-feed-shell`). Research UI — secondary (E2E/admin).
 
 ## Перед началом
 
@@ -64,7 +66,9 @@
 - `AnalyticProject/src/app/(app)/researches/page.tsx`
 - `AnalyticProject/src/app/(app)/researches/new/page.tsx`
 - `AnalyticProject/src/app/(app)/researches/[researchId]/page.tsx`
+- `AnalyticProject/src/app/(app)/researches/[researchId]/not-found.tsx`
 - `AnalyticProject/src/components/research/ResearchForm.tsx`
+- `AnalyticProject/src/lib/research/keywords.ts`
 
 ## API / схема / поля
 
@@ -72,13 +76,13 @@
 
 ## Тест-кейсы
 
-| # | Сценарий | Ожидание |
-|---|---|---|
-| T1 | List пустой после регистрации | empty state |
-| T2 | Create с валидными полями | redirect detail, данные видны |
-| T3 | Create без title | ошибка в UI |
-| T4 | Direct URL чужого research | 404 page |
-| T5 | Manual Flow A шаги 1–2 | owner checklist |
+| # | Сценарий | Ожидание | Статус |
+|---|---|---|---|
+| T1 | List пустой после регистрации | empty state | ✅ |
+| T2 | Create с валидными полями | redirect detail, данные видны | ✅ |
+| T3 | Create без title | ошибка в UI | ✅ (HTML required + API 400) |
+| T4 | Direct URL чужого research | 404 page | ✅ |
+| T5 | Manual Flow A шаги 1–2 | owner checklist | ⏳ |
 
 ## Блокеры
 
@@ -86,9 +90,9 @@
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T5 (T5 manual OK)
-- [ ] Не ломает auth middleware
-- [ ] Mobile-readable (базово, без pixel-perfect)
+- [x] T1–T4 (T5 manual — owner)
+- [x] Не ломает auth middleware
+- [x] Mobile-readable (базово, без pixel-perfect)
 
 ## Как проверить
 
@@ -101,8 +105,8 @@ npm run test:e2e -- research
 
 ## Как отметить выполнение
 
-1. Журнал. 2. Статус → `DONE`. 3. `04_STATE.md` → F3-01.
+1. Журнал. 2. Статус → `DONE`. 3. README фичи (`../README.md`). 4. `04_STATE.md` → F3-01.
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-30` — List (SSR prisma), `/researches/new` + ResearchForm, detail shell + not-found; keywords helper; lint/test/build OK; T1–T4 smoke OK.

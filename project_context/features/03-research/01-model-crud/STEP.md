@@ -1,6 +1,6 @@
 # Шаг F2-01 — Модель Research + CRUD API
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend  
 **Зависит от:** `02-auth/02-api-protection`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F2-01) · **Фича:** `03-research`
@@ -102,21 +102,21 @@ Migrate: `add_researches`
 
 ## Критерии готовности (DoD)
 
-- [ ] Migrate deploy OK
-- [ ] T1–T7 green
-- [ ] Response shape соответствует API.md
+- [x] Migrate deploy OK
+- [x] T1–T7 green
+- [x] Response shape соответствует API.md
 
 ## Как проверить
 
 ```bash
 npx prisma migrate deploy
-npm test -- --grep research
+npm test -- -t research
 ```
 
 ## Как отметить выполнение
 
-1. Журнал. 2. Статус → `DONE`. 3. `04_STATE.md` → F2-02.
+1. Журнал. 2. Статус → `DONE`. 3. README фичи (`../README.md`). 4. `04_STATE.md` → F2-02.
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-30` — Prisma `Research` + migrate `add_researches`; zod validation; CRUD routes; T1–T7 green (30 tests suite).

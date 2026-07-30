@@ -17,12 +17,12 @@ export default function RegisterPage() {
     setError(null);
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError('Пароль должен быть не короче 8 символов');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Пароли не совпадают');
       return;
     }
 
@@ -38,14 +38,14 @@ export default function RegisterPage() {
       const data = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        setError(data.error ?? 'Registration failed');
+        setError(data.error ?? 'Не удалось зарегистрироваться');
         return;
       }
 
-      router.push('/researches');
+      router.push('/ideas');
       router.refresh();
     } catch {
-      setError('Registration failed');
+      setError('Не удалось зарегистрироваться');
     } finally {
       setPending(false);
     }
@@ -54,9 +54,9 @@ export default function RegisterPage() {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Register</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Регистрация</h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Create your AnalyticSaaS account
+          Создайте аккаунт AnalyticSaaS
         </p>
       </div>
 
@@ -74,7 +74,7 @@ export default function RegisterPage() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          Password
+          Пароль
           <input
             type="password"
             required
@@ -87,7 +87,7 @@ export default function RegisterPage() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          Confirm password
+          Подтвердите пароль
           <input
             type="password"
             required
@@ -110,14 +110,14 @@ export default function RegisterPage() {
           disabled={pending}
           className="rounded bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
         >
-          {pending ? 'Creating…' : 'Create account'}
+          {pending ? 'Создание…' : 'Создать аккаунт'}
         </button>
       </form>
 
       <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        Already have an account?{' '}
+        Уже есть аккаунт?{' '}
         <Link href="/login" className="underline underline-offset-2">
-          Log in
+          Войти
         </Link>
       </p>
     </main>

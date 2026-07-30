@@ -31,7 +31,7 @@
 |---|---|---|---|---|
 | 01 | [bootstrap](./01-bootstrap/) | 01-app-scaffold, 02-prisma-postgres, 03-job-runner-skeleton | F0-01 (3), F0-03 (3) | F0 |
 | 02 | [auth](./02-auth/) | 01-register-login, 02-api-protection | F1-01 (3) | F1 |
-| 03 | [research](./03-research/) | 01-model-crud, 02-ui-list-create | — | F2 |
+| 03 | [research](./03-research/) | 01-model-crud, 02-ui-list-create, **03-ideas-feed-shell** | — | F2 |
 | 04 | [signals](./04-signals/) | 01-manual-signal, 02-source-adapter | — | F3 |
 | 05 | [scoring-domain](./05-scoring-domain/) | 01-score-formulas, 02-narrowing-helper | — | F4 |
 | 06 | [pipeline-jobs](./06-pipeline-jobs/) | 01-models … 06-scheduled-refresh | **F5-03 (6)** | F5 |
@@ -46,9 +46,20 @@
 1. Открыть текущий `STEP.md` в очереди (и подшаги, если есть таблица «Подшаги»).
 2. Прочитать «Перед началом» + SSOT из `docs/`.
 3. Реализовать подзадачи по порядку → DoD → тест-кейсы → журнал.
-4. Статус шага → `DONE` → обновить `04_STATE.md`.
+4. Статус шага → `DONE` → обновить:
+   - `STEP.md` (статус + журнал)
+   - README этой фичи (`features/NN-…/README.md`)
+   - `04_STATE.md`
 
 ## Статусы
 
-Все шаги: **TODO** (код не начат).  
-Детализация STEP.md: **DONE** (`2026-07-29`).
+| Фича | Статус |
+|---|---|
+| 01-bootstrap | **DONE** |
+| 02-auth | **DONE** |
+| 03-research | **DONE** (F2-01/02/03; home = Ideas feed) |
+| 04-signals … 09 | TODO |
+
+Детализация STEP.md: **DONE** (`2026-07-29`).  
+**Pivot UX** `2026-07-30`: лента идей, без обязательного user Research.  
+Текущий следующий: **F3-01** — [`04-signals/01-manual-signal`](./04-signals/01-manual-signal/STEP.md).

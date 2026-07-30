@@ -17,18 +17,24 @@ export async function AppHeader() {
             <span className="text-zinc-600 dark:text-zinc-400">
               {session.user.email}
             </span>
-            <Link href="/researches" className="underline underline-offset-2">
-              Researches
+            <Link href="/ideas" className="underline underline-offset-2">
+              Идеи
+            </Link>
+            <Link
+              href="/researches"
+              className="text-zinc-500 underline underline-offset-2 dark:text-zinc-400"
+            >
+              Исследования
             </Link>
             <LogoutButton />
           </>
         ) : (
           <>
             <Link href="/login" className="underline underline-offset-2">
-              Log in
+              Вход
             </Link>
             <Link href="/register" className="underline underline-offset-2">
-              Register
+              Регистрация
             </Link>
           </>
         )}
