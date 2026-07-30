@@ -1,6 +1,6 @@
 # Подшаг F1-01b — Auth provider
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** a-db-schema
 
 ## Цель
@@ -25,10 +25,10 @@
 
 ## DoD
 
-- [ ] Register creates User row
-- [ ] Login establishes session
-- [ ] Session readable server-side (`auth()`)
+- [x] Register creates User row
+- [x] Login establishes session
+- [x] Session readable server-side (`auth()`)
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — `src/auth.ts`; Credentials + bcrypt + JWT; без PrismaAdapter; `/api/auth/*`.

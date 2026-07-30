@@ -1,6 +1,6 @@
 # Подшаг F1-01c — Login/Register UI
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** b-auth-provider
 
 ## Цель
@@ -18,9 +18,9 @@
 
 ## DoD
 
-- [ ] Manual Flow A step 1 в браузере
-- [ ] Ошибки валидации показываются пользователю
+- [x] Manual Flow A step 1 в браузере (владелец подтвердил)
+- [x] Ошибки валидации показываются пользователю
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — `/login`, `/register`, header + logout, `/researches` placeholder; T7 OK.

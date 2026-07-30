@@ -1,6 +1,6 @@
 # Шаг F1-01 — Регистрация/вход
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `01-bootstrap/02-prisma-postgres`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F1-01) · **Фича:** `02-auth`
@@ -61,14 +61,14 @@
 
 ## Блокеры (OPEN_QUESTIONS)
 
-- [ ] **Auth.js vs Clerk** — выбрать до подшага b
-- [ ] **Magic link vs password** — выбрать до подшага b
+- [x] **Auth.js vs Clerk** — **Auth.js** (`DECISIONS.md`)
+- [x] **Magic link vs password** — **email/password** (`DECISIONS.md`)
 
 ## Критерии готовности (DoD)
 
-- [ ] Подшаги a, b, c — `DONE`
-- [ ] T1–T7 проходят
-- [ ] Пароли не логируются; hash только server-side
+- [x] Подшаги a, b, c — `DONE`
+- [x] T1–T7 green (T7 — browser, владелец)
+- [x] Пароли не логируются; hash только server-side
 
 ## Как проверить
 
@@ -85,4 +85,4 @@ npm test -- --grep auth
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — Auth.js beta.32 Credentials + JWT (без PrismaAdapter); Prisma User; API; UI; T1–T7 OK.

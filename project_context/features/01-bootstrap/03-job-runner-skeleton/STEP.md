@@ -1,6 +1,6 @@
 # Шаг F0-03 — Job runner skeleton
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend · Jobs  
 **Зависит от:** `01-app-scaffold` (параллельно с F0-02 допустимо)  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F0-03) · **Фича:** `01-bootstrap`
@@ -52,16 +52,16 @@
 
 ## Блокеры (OPEN_QUESTIONS)
 
-- [ ] **Inngest vs BullMQ+Redis** — выбрать до подшага a; зафиксировать в `DECISIONS.md` + журнал.
+- [x] **Inngest vs BullMQ+Redis** — **Inngest** (см. `DECISIONS.md` 2026-07-29).
 
 Рекомендация для соло+Vercel: **Inngest** (меньше инфра). Для self-hosted: BullMQ.
 
 ## Критерии готовности (DoD)
 
-- [ ] Подшаги a, b, c — `DONE`
-- [ ] Решение runner записано в журнал / DECISIONS
-- [ ] Hello job локально отрабатывает
-- [ ] T1–T3 green
+- [x] Подшаги a, b, c — `DONE`
+- [x] Решение runner записано в журнал / DECISIONS
+- [x] Hello job локально отрабатывает
+- [x] T1–T3 green
 
 ## Как проверить
 
@@ -77,4 +77,4 @@ npm test -- --grep job
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — Runner: **Inngest** 4.13.x; hello job `app/hello`; `/api/inngest`; dev trigger; tests green.

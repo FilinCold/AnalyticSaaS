@@ -1,6 +1,6 @@
 # Подшаг F0-03c — Integration tests
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** b-hello-job
 
 ## Цель
@@ -19,9 +19,9 @@
 
 ## DoD
 
-- [ ] `npm test -- --grep job` green
-- [ ] README обновлён
+- [x] `npm test -- -t job` green
+- [x] README обновлён
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — `hello.job.test.ts`; README «Background jobs»; `npm run inngest:dev`.
