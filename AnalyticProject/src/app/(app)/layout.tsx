@@ -2,6 +2,10 @@ import { redirect } from 'next/navigation';
 
 import { getSessionUser } from '@/lib/auth/get-session';
 
+/**
+ * Authenticated app shell. Header (logo, email, logout, Researches nav)
+ * lives in root layout via AppHeader; this layout only enforces session.
+ */
 export default async function AppLayout({
   children,
 }: Readonly<{
@@ -10,7 +14,7 @@ export default async function AppLayout({
   const user = await getSessionUser();
 
   if (!user) {
-    redirect('/login?callbackUrl=%2Fresearches');
+    redirect('/login?callbackUrl=%2Fideas');
   }
 
   return children;

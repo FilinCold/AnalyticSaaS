@@ -20,7 +20,7 @@ describe('auth-guard', () => {
     const response = await GET();
 
     expect(response.status).toBe(401);
-    expect(await response.json()).toEqual({ error: 'Unauthorized' });
+    expect(await response.json()).toEqual({ error: 'Не авторизован' });
   });
 
   it('T2: GET /api/me with session returns user', async () => {
@@ -41,11 +41,11 @@ describe('auth-guard', () => {
 
   it('T3: protectRequest redirects page to /login when anonymous', async () => {
     const { protectRequest } = await import('@/lib/auth/guard');
-    const response = protectRequest(false, '/researches', 'http://localhost:3010');
+    const response = protectRequest(false, '/ideas', 'http://localhost:3010');
 
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe(
-      'http://localhost:3010/login?callbackUrl=%2Fresearches',
+      'http://localhost:3010/login?callbackUrl=%2Fideas',
     );
   });
 
@@ -54,7 +54,7 @@ describe('auth-guard', () => {
     const response = protectRequest(false, '/api/me', 'http://localhost:3010');
 
     expect(response.status).toBe(401);
-    expect(await response.json()).toEqual({ error: 'Unauthorized' });
+    expect(await response.json()).toEqual({ error: 'Не авторизован' });
   });
 
   it('T4: middleware matcher leaves /login and public APIs unprotected', async () => {
@@ -65,8 +65,11 @@ describe('auth-guard', () => {
     expect(joined).not.toMatch(/api\/auth/);
     expect(joined).not.toMatch(/api\/health/);
     expect(middlewareMatcher).toEqual([
+      '/ideas',
+      '/ideas/:path*',
       '/researches/:path*',
       '/api/researches/:path*',
+      '/api/ideas',
       '/api/ideas/:path*',
       '/api/me',
     ]);
