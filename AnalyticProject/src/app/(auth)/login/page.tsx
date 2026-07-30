@@ -6,7 +6,7 @@ import { FormEvent, Suspense, useState } from 'react';
 
 function safeCallbackUrl(raw: string | null): string {
   if (!raw || !raw.startsWith('/') || raw.startsWith('//')) {
-    return '/researches';
+    return '/ideas';
   }
   return raw;
 }
@@ -35,14 +35,14 @@ function LoginForm() {
       const data = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        setError(data.error ?? 'Login failed');
+        setError(data.error ?? 'Не удалось войти');
         return;
       }
 
       router.push(callbackUrl);
       router.refresh();
     } catch {
-      setError('Login failed');
+      setError('Не удалось войти');
     } finally {
       setPending(false);
     }
@@ -51,9 +51,9 @@ function LoginForm() {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Log in</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Вход</h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Sign in to AnalyticSaaS
+          Войдите в AnalyticSaaS
         </p>
       </div>
 
@@ -71,7 +71,7 @@ function LoginForm() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          Password
+          Пароль
           <input
             type="password"
             required
@@ -94,14 +94,14 @@ function LoginForm() {
           disabled={pending}
           className="rounded bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
         >
-          {pending ? 'Signing in…' : 'Sign in'}
+          {pending ? 'Вход…' : 'Войти'}
         </button>
       </form>
 
       <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        No account?{' '}
+        Нет аккаунта?{' '}
         <Link href="/register" className="underline underline-offset-2">
-          Register
+          Регистрация
         </Link>
       </p>
     </main>
@@ -113,7 +113,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-4 py-16">
-          <p className="text-sm text-zinc-600">Loading…</p>
+          <p className="text-sm text-zinc-600">Загрузка…</p>
         </main>
       }
     >

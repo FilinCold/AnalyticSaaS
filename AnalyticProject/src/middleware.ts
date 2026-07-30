@@ -12,8 +12,11 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
+    '/ideas',
+    '/ideas/:path*',
     '/researches/:path*',
     '/api/researches/:path*',
+    '/api/ideas',
     '/api/ideas/:path*',
     '/api/me',
   ],

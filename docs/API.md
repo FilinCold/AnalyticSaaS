@@ -11,8 +11,8 @@
 | Content-Type | `application/json` |
 | ID | UUID v4 в path |
 | Ошибки | `{ "error": string, "code"?: string }` |
-| Ownership | Research/Signal/Idea/Run принадлежат `userId` сессии; чужой ресурс → `404` (не `403`, чтобы не раскрывать id) |
-| Пагинация | MVP: без пагинации; list endpoints возвращают все записи пользователя по research |
+| Ownership | **Pivot 2026-07-30:** Ideas лента — общий каталог для любого auth user. Research/Signal/Run: system feed (internal) или ownership `userId` на secondary CRUD; чужой user research → `404` |
+| Пагинация | MVP: без пагинации; feed list возвращает все recommended (лимит позже) |
 
 ### Коды HTTP
 
@@ -42,7 +42,9 @@ _Точные пути зависят от Auth.js / Clerk — зафиксир�
 
 ---
 
-## Researches (F2)
+## Researches (F2) — internal / secondary
+
+> User-facing primary API — Ideas feed. Research CRUD остаётся для system feed, E2E, admin.
 
 ### `GET /api/researches`
 
@@ -184,9 +186,32 @@ _Точные пути зависят от Auth.js / Clerk — зафиксир�
 
 ---
 
-## Ideas (F6)
+## Ideas (F2-03 stub / F6)
 
-### `GET /api/researches/:researchId/ideas`
+> Primary UX. Auth required. Каталог платформы (system feed), не per-user isolation.
+
+### `GET /api/ideas` (лента)
+
+**Query:** `status=recommended|narrowed|excluded|candidate` (default `recommended`).
+
+**Ответ 200:**
+
+```json
+{
+  "ideas": [ /* как ниже */ ],
+  "stats": {
+    "recommendedCount": 0,
+    "narrowedCount": 0,
+    "excludedCount": 0,
+    "lastPipelineFinishedAt": "ISO8601|null"
+  }
+}
+```
+
+F2-03: допускается stub `{ ideas: [], stats: {…zeros} }`.  
+F6: реальные данные + пороги.
+
+### `GET /api/researches/:researchId/ideas` (secondary / internal)
 
 **Query:** `status=recommended|narrowed|excluded|candidate` (default `recommended`).
 

@@ -15,7 +15,8 @@
 
 ## Цель
 
-Ручной сигнал сохраняется к Research; list на detail; лимит длины текста.
+Ручной сигнал сохраняется в **system feed** Research (E2E/admin/secondary UI); list API; лимит длины текста.  
+Не primary user flow после pivot 2026-07-30 — основной путь сигналов = адаптеры (F3-02).
 
 ## Не входит
 

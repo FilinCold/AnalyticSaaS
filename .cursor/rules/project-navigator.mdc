@@ -7,24 +7,25 @@ alwaysApply: true
 
 ## Что за проект
 
-AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; код не начат.
+AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; реализация в `AnalyticProject/` (F0–F2-03).
 
 ## Стек и где что
 
 | Часть | Стек | Папка |
 |---|---|---|
-| Код | Next.js+TS+Prisma+PG (предложение) | `AnalyticProject/` |
+| Код | Next.js+TS+Prisma+PG+Auth.js+Inngest | `AnalyticProject/` |
 | SSOT требований/архитектуры | — | `docs/` |
 | Kickoff/прогресс | — | `project_context/` |
 
 ## Активный план
 
-**Фаза:** ожидание команды на реализацию F0  
+**Фаза:** F2-03 DONE (pivot: Ideas feed); следующий **F3-01 Signal model**  
 **Статус:** [`project_context/04_STATE.md`](project_context/04_STATE.md)  
-**Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md)
+**Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md)  
+**Pivot:** [`docs/DECISIONS.md`](docs/DECISIONS.md) § 2026-07-30
 
 ## Правила
 
 - План → согласование → код. Без одобрения не реализовывать.
 - Не расширять scope за `docs/MVP_SCOPE.md` / `docs/NON_GOALS.md`.
-- Один факт — один файл. Прогресс — только `04_STATE.md`.
+- Один факт — один файл. Прогресс — `04_STATE.md` + README фичи + `STEP.md`.

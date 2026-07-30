@@ -26,11 +26,11 @@ export async function registerUser(
   const normalizedEmail = email.trim().toLowerCase();
 
   if (!isValidEmail(normalizedEmail)) {
-    throw new RegisterError('Invalid email', 400);
+    throw new RegisterError('Некорректный email', 400);
   }
 
   if (!isValidPassword(password)) {
-    throw new RegisterError('Password must be at least 8 characters', 400);
+    throw new RegisterError('Пароль должен быть не короче 8 символов', 400);
   }
 
   const passwordHash = await hashPassword(password);
@@ -50,7 +50,7 @@ export async function registerUser(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      throw new RegisterError('Email already registered', 409);
+      throw new RegisterError('Email уже зарегистрирован', 409);
     }
     throw error;
   }

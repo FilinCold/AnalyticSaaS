@@ -7,12 +7,14 @@
 ## Порядок реализации
 
 ```
-F0 Bootstrap → F1 Auth → F2 Research → F3 Signals
+F0 Bootstrap → F1 Auth → F2 Research (internal) + Feed shell
+    → F3 Signals (adapters → system feed)
     → F4 Scoring domain (pure) → F5 Pipeline jobs
-    → F6 Ideas UI → F7 Rescore/narrow → F8 Vertical-slice QA
+    → F6 Ideas UI (полная лента/карточка) → F7 Rescore/narrow → F8 Vertical-slice QA
 ```
 
-Критический путь: F0→F1→F2→F3→F4→F5→F6. F7 после F6. F8 в конце.
+Критический путь: F0→F1→F2→F3→F4→F5→F6. F7 после F6. F8 в конце.  
+**Primary UX:** Ideas feed (F2-03 shell → F6). Research create — не на критическом UX-пути.
 
 ---
 
@@ -75,7 +77,7 @@ F0 Bootstrap → F1 Auth → F2 Research → F3 Signals
 - **Не входит:** OAuth providers сверх минимума, orgs.
 
 ### F1-02 — Защита API
-- **Цель:** мутации Research требуют сессии.
+- **Цель:** защищённые API и app routes требуют сессии.
 - **Зависимости:** F1-01.
 - **БД:** нет.
 - **Backend:** auth guard middleware.
@@ -83,69 +85,85 @@ F0 Bootstrap → F1 Auth → F2 Research → F3 Signals
 - **AI:** нет.
 - **Фон:** нет.
 - **Тесты:** API без cookie → 401.
-- **Приёмка:** нельзя создать research анонимом.
+- **Приёмка:** аноним не видит ленту / не мутирует API.
 - **Риски:** SSR/cookie edge cases.
 - **Не входит:** RBAC.
 
 ---
 
-## F2 — Research
+## F2 — Research (internal) + Feed shell
 
 ### F2-01 — Модель Research
-- **Цель:** таблица researches + CRUD API.
+- **Цель:** таблица researches + CRUD API (контейнер pipeline / system feed).
 - **Зависимости:** F1-02.
 - **БД:** `researches`.
 - **Backend:** create/list/get/update.
-- **UI:** нет или минимальный list.
+- **UI:** нет (или secondary).
 - **AI:** нет.
 - **Фон:** нет.
 - **Тесты:** API CRUD + ownership.
-- **Приёмка:** пользователь видит только свои research.
+- **Приёмка:** ownership 404 на чужой id; модель готова для system feed.
 - **Риски:** нет.
-- **Не входит:** pipeline trigger.
+- **Не входит:** pipeline trigger; обязательный user-facing create.
+- **Статус:** DONE (2026-07-30).
 
-### F2-02 — UI Research list/create
-- **Цель:** создать исследование (title, topic, keywords).
+### F2-02 — UI Research list/create (secondary)
+- **Цель:** list/create/detail shell для Research (admin/E2E/debug; **не** home).
 - **Зависимости:** F2-01.
 - **БД:** нет новых.
 - **Backend:** использовать API.
 - **UI:** list + create form + detail shell.
 - **AI:** нет.
 - **Фон:** нет.
-- **Тесты:** e2e/smoke create research.
-- **Приёмка:** Flow A шаги 1–2.
-- **Риски:** overdesigned UI.
+- **Тесты:** smoke create research.
+- **Приёмка:** API+UI работают; **не** являются Flow A шагами 1–2 после pivot.
+- **Риски:** путаница с primary UX — nav demote.
 - **Не входит:** красивый дизайн-система.
+- **Статус:** DONE как secondary UI (2026-07-30); supersede primary role → F2-03.
+
+### F2-03 — Ideas feed shell + stats (primary home)
+- **Цель:** после login home = `/ideas`: empty/list shell, сводная статистика-заглушка, ссылка на карточку-placeholder; без полного Ideas API (F6).
+- **Зависимости:** F1-02, F2-01 (system feed id может появиться позже).
+- **БД:** нет новых (ideas table — F5-01); shell без данных или mock empty.
+- **Backend:** опционально stub `GET /api/ideas` → `{ ideas: [], stats }`.
+- **UI:** feed layout + stats strip + empty state «Идеи появятся после анализа источников».
+- **AI:** нет.
+- **Фон:** нет.
+- **Тесты:** auth → `/ideas`; anonymous → login.
+- **Приёмка:** Flow A шаг 2 (лента как home); Research create не обязателен.
+- **Риски:** дублирование с F6-01 — F2-03 только shell; F6 наполняет данными.
+- **Не входит:** полная карточка, вкладки narrowed/excluded, pipeline status UI.
+- **Статус:** DONE (2026-07-30).
 
 ---
 
 ## F3 — Signals
 
 ### F3-01 — Модель Signal + manual create
-- **Цель:** добавлять сигнал текстом к research.
+- **Цель:** signals на **system feed**; manual create для E2E/admin.
 - **Зависимости:** F2-01.
 - **БД:** `signals`.
-- **Backend:** POST signal.
-- **UI:** форма paste на detail.
+- **Backend:** POST/GET signals (привязка к system research).
+- **UI:** вторичная форма paste (не primary); E2E может бить API.
 - **AI:** нет.
 - **Фон:** нет.
-- **Тесты:** create+list signals.
-- **Приёмка:** ≥3 manual signals сохраняются (demo/E2E); автозапуск pipeline — при ≥1 сигнале (`DECISIONS.md`).
+- **Тесты:** create+list signals на system feed.
+- **Приёмка:** ≥3 manual signals (demo/E2E); автозапуск pipeline — при ≥1.
 - **Риски:** огромные тексты — лимит длины.
 - **Не входит:** адаптеры.
 
-### F3-02 — Один source adapter
-- **Цель:** подтянуть сигналы из одного открытого источника.
+### F3-02 — Source adapters (HN → PH → Reddit)
+- **Цель:** подтянуть сигналы из открытых источников в system feed (любые ниши внутри источника).
 - **Зависимости:** F3-01, F0-03 (если async).
 - **БД:** signals metadata/source_url.
-- **Backend:** adapter interface + одна реализация.
-- **UI:** кнопка «Подтянуть».
+- **Backend:** adapter interface + реализации по порядку HN → PH → Reddit.
+- **UI:** кнопка «Обновить ленту» / ingest (на feed, не на user Research).
 - **AI:** нет.
 - **Фон:** ingest job optional.
-- **Тесты:** mock adapter → N signals.
-- **Приёмка:** research получает сигналы не только manual.
+- **Тесты:** mock adapter → N signals в system feed.
+- **Приёмка:** лента получает сигналы не только manual.
 - **Риски:** API keys, rate limits, ToS.
-- **Не входит:** второй адаптер, краулер.
+- **Не входит:** краулер всего интернета; 4-й источник.
 
 ---
 
@@ -233,47 +251,47 @@ F0 Bootstrap → F1 Auth → F2 Research → F3 Signals
 - **Риски:** double-submit — lock/disable; manual cooldown 5 мин на Research (MVP).
 - **Не входит:** websocket.
 
-### F5-05 — Автозапуск при первом Research
-- **Цель:** после создания Research + появления сигналов — auto `pipeline.run` (`trigger=initial`) без обязательной кнопки.
+### F5-05 — Автозапуск при первых сигналах (system feed)
+- **Цель:** после появления сигналов в system feed — auto `pipeline.run` (`trigger=initial`) без обязательной кнопки.
 - **Зависимости:** F5-04, F3-01.
-- **БД:** researches.status.
-- **Backend:** hook после create signal / create research with signals.
-- **UI:** индикатор «Анализ запущен автоматически».
+- **БД:** researches.status (system feed).
+- **Backend:** hook после create signal / ingest.
+- **UI:** индикатор на ленте «Анализ запущен».
 - **AI:** нет.
 - **Фон:** enqueue initial.
-- **Тесты:** new research + signal → run created.
+- **Тесты:** system feed + signal → run created.
 - **Приёмка:** Flow A шаг 4 без ручного клика.
 - **Риски:** запуск до появления сигналов — не стартовать.
-- **Не входит:** авто при пустом research.
+- **Не входит:** авто при пустом feed.
 
 ### F5-06 — Scheduled refresh (раз в 3 дня)
-- **Цель:** cron `research.schedule_refresh` → pipeline для Research старше 3 дней.
+- **Цель:** cron → pipeline для system feed старше 3 дней (UX-окно актуальности 3–5 дней).
 - **Зависимости:** F5-04, F0-03.
 - **БД:** researches.auto_refresh_enabled, last_pipeline_finished_at.
-- **Backend:** cron query + enqueue scheduled runs.
-- **UI:** метка «Последнее обновление …» на Research.
+- **Backend:** cron query + enqueue scheduled runs (+ re-ingest адаптеров).
+- **UI:** метка «Последнее обновление …» на ленте.
 - **AI:** нет.
 - **Фон:** daily cron + pipeline.run.
-- **Тесты:** fixture research 4 days old → scheduled enqueued; 1 day old → skip.
+- **Тесты:** fixture feed 4 days old → scheduled enqueued; 1 day old → skip.
 - **Приёмка:** Flow A2; интервал 3 календарных дня.
-- **Риски:** LLM cost при многих researches — полный rate limit per user (post-MVP); MVP: cron без per-user cap.
+- **Риски:** LLM cost — MVP без per-user cap (один system feed).
 - **Не входит:** настройка интервала пользователем.
 
 ---
 
 ## F6 — Ideas UI
 
-### F6-01 — Список recommended
-- **Цель:** основной список: фильтр порогов, sort Opportunity Score.
-- **Зависимости:** F5-03, F2-02.
-- **БД:** read ideas.
-- **Backend:** GET ideas?status=recommended.
-- **UI:** table/list.
+### F6-01 — Список recommended (полная лента)
+- **Цель:** основной список ленты: фильтр порогов, sort Opportunity Score; заменяет empty shell F2-03.
+- **Зависимости:** F5-03, F2-03.
+- **БД:** read ideas (system feed / global catalog).
+- **Backend:** GET `/api/ideas?status=recommended`.
+- **UI:** feed list (primary home).
 - **AI:** нет.
 - **Фон:** нет.
 - **Тесты:** idea ниже порога не в списке.
-- **Приёмка:** только 4-порога.
-- **Риски:** пустой список UX — показать excluded count.
+- **Приёмка:** только 4-порога; auth required.
+- **Риски:** пустой список UX — показать excluded count + stats.
 - **Не входит:** экспорт PDF.
 
 ### F6-02 — Карточка идеи

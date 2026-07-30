@@ -12,12 +12,12 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as LoginBody;
   } catch {
-    return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
+    return Response.json({ error: 'Некорректный JSON' }, { status: 400 });
   }
 
   if (typeof body.email !== 'string' || typeof body.password !== 'string') {
     return Response.json(
-      { error: 'email and password are required' },
+      { error: 'Нужны email и пароль' },
       { status: 400 },
     );
   }
@@ -32,13 +32,16 @@ export async function POST(request: Request) {
     return Response.json({ ok: true });
   } catch (error) {
     if (isCredentialsFailure(error)) {
-      return Response.json({ error: 'Invalid email or password' }, { status: 401 });
+      return Response.json(
+        { error: 'Неверный email или пароль' },
+        { status: 401 },
+      );
     }
     const detail = error instanceof Error ? error.message : String(error);
     console.error('[auth/login] failed:', error);
     return Response.json(
       {
-        error: 'Login failed',
+        error: 'Не удалось войти',
         ...(process.env.NODE_ENV === 'development' ? { detail } : {}),
       },
       { status: 500 },

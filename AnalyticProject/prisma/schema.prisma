@@ -10,17 +10,35 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
-  passwordHash String    @map("password_hash")
-  name         String?
-  emailVerified DateTime? @map("email_verified")
-  image        String?
-  createdAt    DateTime  @default(now()) @map("created_at")
-  accounts     Account[]
-  sessions     Session[]
+  id            String     @id @default(uuid())
+  email         String     @unique
+  passwordHash  String     @map("password_hash")
+  name          String?
+  emailVerified DateTime?  @map("email_verified")
+  image         String?
+  createdAt     DateTime   @default(now()) @map("created_at")
+  accounts      Account[]
+  sessions      Session[]
+  researches    Research[]
 
   @@map("users")
+}
+
+model Research {
+  id                     String    @id @default(uuid())
+  userId                 String    @map("user_id")
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title                  String
+  topic                  String
+  keywords               String[]
+  status                 String    @default("draft")
+  autoRefreshEnabled     Boolean   @default(true) @map("auto_refresh_enabled")
+  lastPipelineFinishedAt DateTime? @map("last_pipeline_finished_at")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("researches")
 }
 
 model Account {

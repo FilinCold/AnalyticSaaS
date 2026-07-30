@@ -16,14 +16,16 @@
 | Column | Type | Notes |
 |---|---|---|
 | id | uuid PK | |
-| user_id | uuid FK → users | index |
+| user_id | uuid FK → users | index; MVP system feed — служебный owner user |
 | title | text | |
-| topic | text | |
-| keywords | text[] / jsonb | |
+| topic | text | для system feed: e.g. «Platform feed» / broad topic |
+| keywords | text[] / jsonb | для system feed могут быть пустыми (любые ниши) |
 | status | text | draft/running/ready/failed |
 | auto_refresh_enabled | boolean | default true |
 | last_pipeline_finished_at | timestamptz null | для cron 3 дня |
 | created_at, updated_at | timestamptz | |
+
+> Pivot 2026-07-30: Research = internal pipeline container; user не обязан создавать.
 
 ### signals
 | Column | Type | Notes |

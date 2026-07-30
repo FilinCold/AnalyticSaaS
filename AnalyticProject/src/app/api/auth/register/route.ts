@@ -13,12 +13,12 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as RegisterBody;
   } catch {
-    return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
+    return Response.json({ error: 'Некорректный JSON' }, { status: 400 });
   }
 
   if (typeof body.email !== 'string' || typeof body.password !== 'string') {
     return Response.json(
-      { error: 'email and password are required' },
+      { error: 'Нужны email и пароль' },
       { status: 400 },
     );
   }
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     } catch (error) {
       if (isCredentialsFailure(error)) {
         return Response.json(
-          { error: 'Registered but session failed' },
+          { error: 'Аккаунт создан, но сессия не открылась' },
           { status: 500 },
         );
       }
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       console.error('[auth/register] signIn failed:', error);
       return Response.json(
         {
-          error: 'Registered but session failed',
+          error: 'Аккаунт создан, но сессия не открылась',
           ...(process.env.NODE_ENV === 'development' ? { detail } : {}),
         },
         { status: 500 },
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     console.error('[auth/register] failed:', error);
     return Response.json(
       {
-        error: 'Registration failed',
+        error: 'Не удалось зарегистрироваться',
         ...(process.env.NODE_ENV === 'development' ? { detail } : {}),
       },
       { status: 500 },

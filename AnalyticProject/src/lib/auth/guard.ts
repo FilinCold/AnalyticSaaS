@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 
 /** Paths guarded by middleware (pages + APIs). Public auth/health stay out. */
 export const middlewareMatcher = [
+  '/ideas',
+  '/ideas/:path*',
   '/researches/:path*',
   '/api/researches/:path*',
+  '/api/ideas',
   '/api/ideas/:path*',
   '/api/me',
 ] as const;
@@ -23,7 +26,7 @@ export function protectRequest(
   }
 
   if (pathname.startsWith('/api/')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: 'Не авторизован' }, { status: 401 });
   }
 
   const loginUrl = new URL('/login', origin);
