@@ -1,6 +1,6 @@
 # Подшаг F1-01a — DB schema users
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md)
 
 ## Цель
@@ -25,9 +25,9 @@ Prisma model `User` (+ auth tables если Auth.js: Account, Session, Verificat
 
 ## DoD
 
-- [ ] Migrate на чистой БД после F0-02 baseline
-- [ ] `prisma.user` доступен в types
+- [x] Migrate на чистой БД после F0-02 baseline
+- [x] `prisma.user` доступен в types
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — migrate `20260729154413_add_users`; User + Account/Session/VerificationToken.

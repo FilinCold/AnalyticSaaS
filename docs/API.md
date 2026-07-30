@@ -36,6 +36,7 @@
 | POST | `/api/auth/login` | `{ email, password }` | session cookie | F1-01 |
 | POST | `/api/auth/logout` | — | clear cookie | F1-01 |
 | GET | `/api/auth/session` | — | `{ user: { id, email } }` \| `401` | F1-01 |
+| GET | `/api/me` | — | `{ user: { id, email } }` \| `401` | F1-02 |
 
 _Точные пути зависят от Auth.js / Clerk — зафиксировать в журнале F1-01._
 

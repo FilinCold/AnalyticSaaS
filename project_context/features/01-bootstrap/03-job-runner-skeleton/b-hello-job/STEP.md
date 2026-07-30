@@ -1,6 +1,6 @@
 # Подшаг F0-03b — Hello job
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** a-choose-runner
 
 ## Цель
@@ -24,9 +24,9 @@ Job `hello` с известным payload; enqueue из API или test helper; 
 
 ## DoD
 
-- [ ] Enqueue + process в dev вручную работает
-- [ ] Handler вызывается ровно 1 раз на event
+- [x] Enqueue + process в dev вручную работает
+- [x] Handler вызывается ровно 1 раз на event
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — `src/jobs/hello.ts`; event `app/hello`; `POST /api/dev/trigger-hello`.

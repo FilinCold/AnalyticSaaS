@@ -1,6 +1,6 @@
 # Шаг F0-02 — Prisma + Postgres
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend · Persistence  
 **Зависит от:** `01-app-scaffold`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F0-02) · **Фича:** `01-bootstrap`
@@ -81,10 +81,10 @@ Prisma подключён к PostgreSQL; baseline-миграция на пуст
 
 ## Критерии готовности (DoD)
 
-- [ ] `prisma migrate deploy` на чистой локальной БД
-- [ ] `DATABASE_URL` документирован в README и `.env.example`
-- [ ] Prisma client singleton без утечек в dev
-- [ ] T1–T4 проходят
+- [x] `prisma migrate deploy` на чистой локальной БД
+- [x] `DATABASE_URL` документирован в README и `.env.example`
+- [x] Prisma client singleton без утечек в dev
+- [x] T1–T4 проходят
 
 ## Как проверить
 
@@ -103,4 +103,5 @@ npm test -- --grep prisma
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — Prisma 6.19, empty schema, init migration, singleton, docker-compose, smoke test; lint/test/build OK.
+- `2026-07-29` — brew PostgreSQL 16; migrate deploy ×2; `SELECT 1` green; T1–T4 DONE.

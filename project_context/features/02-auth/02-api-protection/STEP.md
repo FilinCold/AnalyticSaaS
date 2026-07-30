@@ -1,6 +1,6 @@
 # Шаг F1-02 — Защита API
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend + Frontend  
 **Зависит от:** `01-register-login`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F1-02) · **Фича:** `02-auth`
@@ -76,14 +76,14 @@
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T4 green
+- [x] T1–T4 green
 - [ ] T5 — проверить повторно после F2-01 (добавить в журнал F2)
-- [ ] Middleware matcher не блокирует `/api/auth/*`, `/api/health`, static
+- [x] Middleware matcher не блокирует `/api/auth/*`, `/api/health`, static
 
 ## Как проверить
 
 ```bash
-npm test -- --grep auth-guard
+npm test -- auth-guard
 ```
 
 ## Как отметить выполнение
@@ -92,4 +92,4 @@ npm test -- --grep auth-guard
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-29` — `getSessionUser`/`requireAuth`; edge-safe `auth.config.ts`; middleware + `protectRequest`; `GET /api/me`; `(app)` layout; login `callbackUrl`; T1–T4 green; lint/test/build OK.

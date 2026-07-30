@@ -1,0 +1,2 @@
+-- Baseline migration (F0-02): empty schema, no domain models yet.
+-- Domain tables added in F1+ (see docs/DATABASE.md).
