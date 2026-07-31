@@ -151,6 +151,7 @@ F0 Bootstrap → F1 Auth → F2 Research (internal) + Feed shell
 - **Приёмка:** ≥3 manual signals (demo/E2E); автозапуск pipeline — при ≥1.
 - **Риски:** огромные тексты — лимит длины.
 - **Не входит:** адаптеры.
+- **Статус:** DONE (2026-07-30).
 
 ### F3-02 — Source adapters (HN → PH → Reddit)
 - **Цель:** подтянуть сигналы из открытых источников в system feed (любые ниши внутри источника).
@@ -164,6 +165,7 @@ F0 Bootstrap → F1 Auth → F2 Research (internal) + Feed shell
 - **Приёмка:** лента получает сигналы не только manual.
 - **Риски:** API keys, rate limits, ToS.
 - **Не входит:** краулер всего интернета; 4-й источник.
+- **Статус:** DONE (2026-07-31).
 
 ---
 

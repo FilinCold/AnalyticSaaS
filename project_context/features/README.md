@@ -58,8 +58,9 @@
 | 01-bootstrap | **DONE** |
 | 02-auth | **DONE** |
 | 03-research | **DONE** (F2-01/02/03; home = Ideas feed) |
-| 04-signals … 09 | TODO |
+| 04-signals | **DONE** (F3-01 + F3-02) |
+| 05–09 | TODO |
 
 Детализация STEP.md: **DONE** (`2026-07-29`).  
 **Pivot UX** `2026-07-30`: лента идей, без обязательного user Research.  
-Текущий следующий: **F3-01** — [`04-signals/01-manual-signal`](./04-signals/01-manual-signal/STEP.md).
+Текущий следующий: **F4-01** — [`05-scoring-domain/01-score-formulas`](./05-scoring-domain/01-score-formulas/STEP.md).

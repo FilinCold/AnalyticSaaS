@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { RefreshFeedButton } from '@/components/ideas/RefreshFeedButton';
 import { getSessionUser } from '@/lib/auth/get-session';
 
 type IdeasStats = {
@@ -58,6 +59,7 @@ export default async function IdeasFeedPage() {
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           Создавать исследование не нужно — лента общая для платформы.
         </p>
+        <RefreshFeedButton />
       </section>
 
       <p className="text-xs text-zinc-400">

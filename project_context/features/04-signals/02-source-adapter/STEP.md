@@ -1,6 +1,6 @@
-# Шаг F3-02 — Один source adapter
+# Шаг F3-02 — Source adapters (HN → PH → Reddit)
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `01-manual-signal`, `01-bootstrap/03-job-runner-skeleton`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F3-02) · **Фича:** `04-signals`
@@ -10,100 +10,88 @@
 1. `docs/ROADMAP.md` (F3-02)
 2. `docs/ARCHITECTURE.md` § Adapters
 3. `docs/BACKGROUND_JOBS.md` (`signals.ingest_adapter`)
-4. `docs/DECISIONS.md` (`source_type` values)
+4. `docs/DECISIONS.md` (`source_type` values, порядок HN → PH → Reddit)
 
 ## Цель
 
-Один автоматический источник сигналов; кнопка «Подтянуть»; дедуп; mock для тестов.
+Три авто-источника сигналов в **system feed**; кнопка «Обновить ленту» на `/ideas`; дедуп; mock для тестов.
 
 ## Не входит
 
-- Второй адаптер
+- 4-й адаптер / форумы
 - UI настройки API keys (env server-side)
-- Краулинг вне Research context
+- Async Inngest job (sync OK)
+- Pipeline / идеи в ленте (F5/F6)
 
 ## Подзадачи
 
-### 1. Выбор адаптера (OPEN_QUESTIONS)
+### 1. Выбор адаптеров
 
-Зафиксировать один: **Reddit search**, **Hacker News Algolia**, или **RSS feed**.  
-Записать в журнал + `DECISIONS.md`.
+SSOT: **HN → Product Hunt → Reddit** (`DECISIONS.md` § 2026-07-29). STEP устарел («один адаптер») — supersede.
 
 ### 2. Interface
 
-```typescript
-// src/adapters/types.ts
-export interface SourceAdapter {
-  readonly sourceType: 'reddit' | 'hackernews' | 'rss';
-  fetchSignals(ctx: { topic: string; keywords: string[] }): Promise<IngestSignal[]>;
-}
-export type IngestSignal = { sourceUrl?: string; rawText: string; authorHint?: string; capturedAt: Date; metadata?: object };
-```
+`src/adapters/types.ts` — `SourceAdapter`, `IngestSignal`, `AdapterConfigError`.
 
 ### 3. Реализация + MockAdapter
 
-- `src/adapters/<name>.ts` — real fetch с rate limit
-- `src/adapters/mock.ts` — returns N fixture signals
-- Env: `ADAPTER_MODE=mock|live`
+- `hackernews.ts` — Algolia, без ключа
+- `producthunt.ts` — GraphQL + `PRODUCTHUNT_API_TOKEN`
+- `reddit.ts` — OAuth client credentials
+- `mock.ts` — N fixture signals
+- `ADAPTER_MODE=mock|live` (default mock)
 
 ### 4. Ingest service
 
-- `ingestAdapterSignals(researchId)`:
-  - load research topic/keywords
-  - fetch from adapter
-  - dedup by `sourceUrl` or hash(rawText) per research
-  - insert new Signal rows
+- `domain/signals/ingest.ts` — fetch → dedup (`sourceUrl` | hash rawText) → insert
+- `lib/signal/system-feed.ts` — getOrCreate system Research (`topic=__system_feed__`)
 
 ### 5. API + UI
 
-- `POST /api/researches/[id]/signals/ingest` → sync или 202 + job
-- UI: кнопка «Подтянуть из [источник]» на research detail
-- Loading state + count ingested
+- `POST /api/ideas/ingest` — primary (лента)
+- `POST /api/researches/[id]/signals/ingest` — secondary (owned research)
+- UI: `RefreshFeedButton` на `/ideas`
 
-### 6. Optional job `signals.ingest_adapter`
+### 6. Optional job
 
-Если async — enqueue via F0-03 runner; иначе sync OK для MVP.
+Не делали — sync MVP.
 
 ### 7. Tests
 
-- MockAdapter → N new signals
-- Second ingest → 0 duplicates
+T1–T4 + API ownership + ideas ingest + config errors.
 
 ## Файлы
 
 - `AnalyticProject/src/adapters/`
 - `AnalyticProject/src/domain/signals/ingest.ts`
+- `AnalyticProject/src/app/api/ideas/ingest/route.ts`
 - `AnalyticProject/src/app/api/researches/[researchId]/signals/ingest/route.ts`
-
-## API / схема / поля
-
-`docs/API.md` § `POST .../signals/ingest`
+- `AnalyticProject/src/components/ideas/RefreshFeedButton.tsx`
 
 ## Тест-кейсы
 
-| # | Сценарий | Ожидание |
+| # | Сценарий | Статус |
 |---|---|---|
-| T1 | Ingest mock | N signals, correct sourceType |
-| T2 | Re-ingest | 0 new (dedup) |
-| T3 | Ingest чужой research | 404 |
-| T4 | Live mode без API key | graceful error message |
-| T5 | UI button works | count increases |
-
-## Блокеры (OPEN_QUESTIONS)
-
-- [ ] Какой адаптер MVP + ToS/API keys
+| T1 | Ingest mock | ✅ N signals, sourceType |
+| T2 | Re-ingest | ✅ 0 new (dedup) |
+| T3 | Ingest чужой research | ✅ 404 |
+| T4 | Live без API key | ✅ graceful error |
+| T5 | UI button | ⏳ owner browser |
 
 ## Критерии готовности (DoD)
 
-- [ ] Адаптер выбран и задокументирован
-- [ ] T1–T5
-- [ ] Секреты только в env
+- [x] Адаптеры HN/PH/Reddit + mock
+- [x] T1–T4
+- [x] Секреты только в env
+- [ ] T5 owner browser
 
 ## Как проверить
 
 ```bash
-ADAPTER_MODE=mock npm test -- --grep adapter
+ADAPTER_MODE=mock npm test -- -t "ingest|adapter"
 ```
+
+Браузер: `/ideas` → «Обновить ленту» → «Добавлено сигналов: N».
 
 ## Как отметить выполнение
 
@@ -111,4 +99,4 @@ ADAPTER_MODE=mock npm test -- --grep adapter
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — F3-02: adapters HN/PH/Reddit + mock; system feed; `POST /api/ideas/ingest` + research ingest; UI на `/ideas`; T1–T4 green; lint/test/build OK.

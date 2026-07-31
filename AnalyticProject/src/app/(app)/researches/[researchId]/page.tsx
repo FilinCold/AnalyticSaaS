@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { ManualSignalForm } from '@/components/signals/ManualSignalForm';
 import { getSessionUser } from '@/lib/auth/get-session';
 import { prisma } from '@/lib/prisma';
 
@@ -23,6 +24,17 @@ export default async function ResearchDetailPage({ params }: PageProps) {
   if (!research) {
     notFound();
   }
+
+  const signals = await prisma.signal.findMany({
+    where: { researchId: research.id },
+    orderBy: { capturedAt: 'desc' },
+    select: {
+      id: true,
+      rawText: true,
+      capturedAt: true,
+      sourceType: true,
+    },
+  });
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-12">
@@ -63,9 +75,17 @@ export default async function ResearchDetailPage({ params }: PageProps) {
 
       <section className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
         <h2 className="text-lg font-semibold tracking-tight">Сигналы</h2>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Появится в F3 — вставка текста и адаптеры источников.
-        </p>
+        <div className="mt-4">
+          <ManualSignalForm
+            researchId={research.id}
+            initialSignals={signals.map((s) => ({
+              id: s.id,
+              rawText: s.rawText,
+              capturedAt: s.capturedAt.toISOString(),
+              sourceType: s.sourceType,
+            }))}
+          />
+        </div>
       </section>
 
       <section className="border-t border-zinc-200 pt-6 dark:border-zinc-800">

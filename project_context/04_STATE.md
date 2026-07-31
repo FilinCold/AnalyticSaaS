@@ -1,7 +1,7 @@
 # STATE — где мы остановились
 
-**Проект/фича:** AnalyticSaaS — **F2-03 DONE**; следующий шаг **F3-01 Signal model**  
-**Последнее обновление:** `2026-07-30` — UI на русском; pivot + F2-03; next F3-01; uncommitted на `TASK-2@feat_research`
+**Проект/фича:** AnalyticSaaS — **F3-02 DONE**; следующий шаг **F4-01 Score formulas**  
+**Последнее обновление:** `2026-07-31` — F3-02 Source adapters (HN/PH/Reddit → system feed); next F4-01; ветка `TASK-3@signals`
 
 ## Как проверить текущие правки (owner)
 
@@ -14,13 +14,13 @@ cd AnalyticProject
 npm run lint && npm test && npm run build
 ```
 
-Ожидание: lint OK; **35** tests passed; build с роутами `/ideas`, `/api/ideas`, `/researches/*`.
+Ожидание: lint OK; **49** tests passed; build с роутами `/ideas`, `/api/ideas`, `/api/ideas/ingest`, `/api/researches/[id]/signals/ingest`.
 
 ### B. Браузер — pivot + F2-03 (главное) · UI на русском
 
 1. Открой http://localhost:3010/login → войди (или зарегистрируй нового).
 2. После входа должен открыться **`/ideas`** (не `/researches`).
-3. На странице: заголовок **Идеи**, статистика (Рекомендованные/Суженные/Исключённые = 0, Обновлено = Ещё нет), empty state про появление идей, без CTA «создать исследование».
+3. На странице: заголовок **Идеи**, статистика, empty state, кнопка **Обновить ленту**.
 4. В шапке: **Идеи** primary, **Исследования** secondary, **Выйти**.
 5. Анонимно открой http://localhost:3010/ideas → редирект на login с `callbackUrl=/ideas`.
 6. Страницы **Вход** / **Регистрация** — тексты на русском.
@@ -28,8 +28,9 @@ npm run lint && npm test && npm run build
 ### C. Secondary Research (F2-02 ещё жив)
 
 1. Из Идеи → «исследования» / nav **Исследования** → `/researches`.
-2. **Новое исследование** → название + тема → Создать → detail с плейсхолдерами Сигналы/Идеи.
+2. **Новое исследование** → название + тема → Создать → detail: секция **Сигналы** + плейсхолдер Идеи.
 3. Список показывает созданную запись (колонки на русском).
+4. На detail добавь ≥3 сигнала → счётчик и список preview обновляются.
 
 ### D. API smoke (опционально)
 
@@ -37,12 +38,25 @@ npm run lint && npm test && npm run build
 curl -s -b cookies.txt http://localhost:3010/api/ideas
 # → {"ideas":[],"stats":{…zeros…}}
 
-curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авторизован»
+curl -s -b cookies.txt -X POST http://localhost:3010/api/ideas/ingest
+# → {"researchId":"…","ingestedCount":6,…}  (ADAPTER_MODE=mock)
 ```
 
-### E. Что ещё не проверяем (нормально)
+### E. F3-01 Signals (API / UI secondary)
 
-Идей в ленте нет до F3–F6. Pipeline/адаптеры не запущены. T5 owner Flow A — только шаги 1–2 (вход → лента).
+1. На research detail добавь сигнал → появляется в списке, `sourceType=manual`.
+2. Пустой текст / >50000 символов → ошибка валидации.
+3. `npm test -- -t signal` → T1–T5 green.
+
+### F. F3-02 Adapters (лента)
+
+1. `/ideas` → **Обновить ленту** → «Добавлено сигналов: N» (mock: 6).
+2. Повторный клик → «Добавлено сигналов: 0» (dedup).
+3. `ADAPTER_MODE=mock npm test -- -t "ingest|adapter"` → green.
+
+### G. Что ещё не проверяем (нормально)
+
+Идей-карточек в ленте нет до F6 (ingest только Signal rows). Pipeline/scoring — F4/F5.
 
 ---
 
@@ -50,11 +64,11 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 
 **Для реализации (когда будет команда):**
 
-> Прочитай `project_context/04_STATE.md` и `docs/DECISIONS.md` § 2026-07-30. Начни реализацию `project_context/features/04-signals/01-manual-signal/STEP.md` (signals → **system feed**). Код только по этому шагу.
+> Прочитай `project_context/04_STATE.md` и `docs/DECISIONS.md` § 2026-07-30. Начни реализацию `project_context/features/05-scoring-domain/01-score-formulas/STEP.md`. Код только по этому шагу.
 
 **Для ревью плана:**
 
-> Прочитай `project_context/features/README.md` и `docs/API.md`. Дай feedback по детализации; код не писать.
+> Прочитай `project_context/features/README.md` и `docs/AI_PIPELINE.md`. Дай feedback по детализации; код не писать.
 
 **Порядок чтения агента при реализации:**  
 `04_STATE.md` → текущий `STEP.md` (+ подшаги) → `docs/API.md` / `LLM_CONTRACT.md` / `IDEA_CARD_SPEC.md` по шагу → `docs/DECISIONS.md`.
@@ -82,14 +96,16 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 17. **F2-02** — Research UI secondary; T1–T4 smoke OK.
 18. **UX pivot 2026-07-30** — лента идей (news-portal); Research = internal system feed; SSOT обновлён.
 19. **F2-03** — `/ideas` feed shell + stats + `GET /api/ideas` stub; login→ideas; T1–T4 OK.
+20. **F3-01** — Signal Prisma model; GET/POST `/api/researches/[id]/signals`; ManualSignalForm; maybeTrigger stub; T1–T5 OK.
+21. **F3-02** — HN/PH/Reddit adapters + mock; system feed; `POST /api/ideas/ingest`; UI «Обновить ленту»; T1–T4 OK.
 
 ### ⏳ Следующая задача
 
-**F3-01 — Signal model + manual create (system feed):** `project_context/features/04-signals/01-manual-signal/STEP.md`
+**F4-01 — Score formulas (unit):** `project_context/features/05-scoring-domain/01-score-formulas/STEP.md`
 
 ### ❌ Не начато
 
-- F3-01 Signals (следующий), F3+, остальные шаги.
+- F4+, остальные шаги.
 
 ## Прогресс F0-01 (каркас приложения)
 
@@ -259,6 +275,37 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 
 **Проверено** `2026-07-30`: lint OK; `npm test` 35 passed; build OK (`/ideas`, `/api/ideas`). Owner checklist в шапке STATE.
 
+## Прогресс F3-01 (Signal + manual create)
+
+| Подзадача | Статус | Проверка |
+|---|---|---|
+| Prisma Signal + migrate | ✅ DONE | `add_signals` |
+| GET/POST signals API | ✅ DONE | ownership 404; max 50k |
+| ManualSignalForm UI | ✅ DONE | research detail |
+| maybeTriggerInitialPipeline | ✅ DONE | no-op stub F5-05 |
+| tests T1–T5 | ✅ DONE | `vitest -t signal` |
+
+**Тест-кейсы F3-01:** T1–T5 ✅; T6 ⏳ owner browser (≥3 signals на detail)
+
+**Проверено** `2026-07-30`: migrate deploy; lint OK; `npm test` 40 passed; build OK (`/api/researches/[id]/signals`).
+
+## Прогресс F3-02 (Source adapters)
+
+| Подзадача | Статус | Проверка |
+|---|---|---|
+| Adapter interface + mock | ✅ DONE | `src/adapters/` |
+| HN / PH / Reddit live | ✅ DONE | Algolia; PH/Reddit env keys |
+| System feed helper | ✅ DONE | `topic=__system_feed__` |
+| Ingest + dedup | ✅ DONE | `domain/signals/ingest.ts` |
+| `POST /api/ideas/ingest` | ✅ DONE | primary for feed |
+| Research ingest API | ✅ DONE | ownership 404 |
+| UI «Обновить ленту» | ✅ DONE | `/ideas` |
+| tests T1–T4 | ✅ DONE | ingest + adapter-config |
+
+**Тест-кейсы F3-02:** T1–T4 ✅; T5 ⏳ owner browser
+
+**Проверено** `2026-07-31`: lint OK; `npm test` 49 passed; build OK (`/api/ideas/ingest`, signals/ingest).
+
 ## Код в `AnalyticProject/`
 
 | Компонент | Версия / детали |
@@ -281,8 +328,12 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 - `src/lib/prisma.ts`, `src/lib/prisma.test.ts`
 - `src/lib/inngest/client.ts`
 - `src/lib/auth/*` (password, register, credentials, errors, get-session, guard)
-- `src/lib/validation/research.ts`
+- `src/lib/validation/research.ts`, `signal.ts`
 - `src/lib/research/serialize.ts`
+- `src/lib/signal/serialize.ts`, `hash.ts`, `system-feed.ts`
+- `src/lib/pipeline/maybe-trigger-initial.ts`
+- `src/adapters/` (types, mock, hackernews, producthunt, reddit, index)
+- `src/domain/signals/ingest.ts`
 - `src/auth.ts`, `src/auth.config.ts`, `src/types/next-auth.d.ts`
 - `src/middleware.ts`
 - `src/jobs/hello.ts`, `src/jobs/hello.job.test.ts`, `src/jobs/index.ts`
@@ -291,14 +342,19 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 - `src/app/api/auth/{register,login,logout,session,[...nextauth]}/`
 - `src/app/api/me/route.ts`
 - `src/app/api/researches/route.ts`, `[researchId]/route.ts`, `research.api.test.ts`
+- `src/app/api/researches/[researchId]/signals/route.ts`, `signal.api.test.ts`
+- `src/app/api/researches/[researchId]/signals/ingest/route.ts`
+- `src/app/api/ideas/route.ts`, `ideas.api.test.ts`
+- `src/app/api/ideas/ingest/route.ts`
 - `src/app/(auth)/{login,register}/page.tsx`
 - `src/app/(app)/layout.tsx`, `src/app/(app)/ideas/page.tsx`
 - `src/app/(app)/researches/page.tsx`
 - `src/app/(app)/researches/new/page.tsx`
 - `src/app/(app)/researches/[researchId]/page.tsx`, `not-found.tsx`
-- `src/app/api/ideas/route.ts`, `ideas.api.test.ts`
 - `src/components/{app-header,logout-button}.tsx`
 - `src/components/research/ResearchForm.tsx`
+- `src/components/signals/ManualSignalForm.tsx`
+- `src/components/ideas/RefreshFeedButton.tsx`
 - `src/lib/research/{serialize,keywords}.ts`
 - `prisma/schema.prisma`, `prisma/migrations/`
 - `docker-compose.yml`
@@ -306,8 +362,7 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 - `src/app/api/health/route.ts`, `route.test.ts`
 - `README.md`, `.env.example`
 
-**Ещё нет:** Signals (F3), `src/domain/` (F4)
-
+**Ещё нет:** scoring domain (F4), pipeline (F5), idea cards UI (F6)
 ## Фазы проекта
 
 | Фаза | Статус | Что дальше |
@@ -326,21 +381,23 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 | **F2-01 Research model** | **✅ DONE** | internal container |
 | **F2-02 Research UI** | **✅ DONE** | secondary |
 | **F2-03 Ideas feed shell** | **✅ DONE** | `2026-07-30` pivot |
-| F3-01 Signal model | ⏳ TODO | следующий шаг |
-| F3+ / F4+ | ❌ | после F3-01 |
+| **F3-01 Signal model** | **✅ DONE** | `2026-07-30` |
+| **F3-02 Source adapters** | **✅ DONE** | `2026-07-31` |
+| F4-01 Score formulas | ⏳ TODO | следующий шаг |
+| F4+ | ❌ | после F4-01 |
 
 ## Внешние гейты / блокеры
 
-- F3-02: три адаптера (HN → PH → Reddit) — больше работы, чем в исходном F3-02 «один адаптер».
+- F3-02 live: PH/Reddit нужены API keys в env (без них — graceful errors; HN работает без ключа).
 - Git: `git@github.com:FilinCold/AnalyticSaaS.git`
-  - `main` / `develop` @ `8eb9859` (merge PR #1 auth)
-  - рабочая ветка: `TASK-2@feat_research` (F2 + pivot F2-03 **ещё не закоммичен**)
+  - `main` / `develop` включают F2 (PR #2/#3)
+  - рабочая ветка: `TASK-3@signals` (F3-01/F3-02 **ещё не закоммичены**)
 - Диск: следить за свободным местом — при ENOSPC чистить sandbox-cache / лишние `node_modules`.
 
 ## Текущий следующий шаг
 
-**F3-01 Signal model (system feed):**  
-`project_context/features/04-signals/01-manual-signal/STEP.md`
+**F4-01 Score formulas (unit):**  
+`project_context/features/05-scoring-domain/01-score-formulas/STEP.md`
 
 ## Доска статусов
 
@@ -359,8 +416,10 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 | F2-01 | Research model | **DONE** | 2026-07-30 |
 | F2-02 | Research UI (secondary) | **DONE** | 2026-07-30 |
 | F2-03 | Ideas feed shell | **DONE** | 2026-07-30 |
-| F3-01 | Signal model | TODO | — |
-| 01–09 | Реализация по features/ | IN PROGRESS | F2-03 DONE |
+| F3-01 | Signal model | **DONE** | 2026-07-30 |
+| F3-02 | Source adapters | **DONE** | 2026-07-31 |
+| F4-01 | Score formulas | TODO | — |
+| 01–09 | Реализация по features/ | IN PROGRESS | F3 DONE |
 
 ## Журнал
 
@@ -386,3 +445,5 @@ curl -s http://localhost:3010/api/ideas   # без cookie → 401 «Не авт�
 - `2026-07-30` — **F2-03:** `/ideas` shell + API stub; login→ideas; **F2-03 закрыт**; next = F3-01.
 - `2026-07-30` — STATE: добавлен owner verify checklist (A–E) для pivot + F2.
 - `2026-07-30` — UI + user-facing API errors переведены на русский (`lang=ru`).
+- `2026-07-30` — **F3-01:** Signal model + manual API/UI; migrate `add_signals`; maybeTrigger stub; T1–T5; **F3-01 закрыт**; next = F3-02.
+- `2026-07-31` — **F3-02:** HN/PH/Reddit + mock; system feed; `/api/ideas/ingest` + research ingest; UI «Обновить ленту»; T1–T4; **F3-02 закрыт**; next = F4-01.

@@ -1,6 +1,6 @@
 # Шаг F3-01 — Signal + manual create
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `03-research/01-model-crud`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F3-01) · **Фича:** `04-signals`
@@ -80,13 +80,15 @@ Migrate: `add_signals`
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T6
-- [ ] `maybeTriggerInitialPipeline` stub/export готов для F5-05
+- [x] T1–T5 (API); T6 — manual browser на research detail
+- [x] `maybeTriggerInitialPipeline` stub/export готов для F5-05
 
 ## Как проверить
 
 ```bash
-npm test -- --grep signal
+cd AnalyticProject
+npm test -- -t signal
+npm run lint && npm test && npm run build
 ```
 
 ## Как отметить выполнение
@@ -95,4 +97,4 @@ npm test -- --grep signal
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-30` — Prisma Signal + migrate `add_signals`; GET/POST signals; ManualSignalForm; maybeTrigger stub; T1–T5 green (40 tests suite).
