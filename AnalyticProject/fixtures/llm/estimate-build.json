@@ -1,0 +1,16 @@
+{
+  "estimatedBuildDays": 10,
+  "buildTimeConfidence": "high",
+  "mainTechnicalRisk": "LLM output quality variance on noisy forum text",
+  "requiredIntegrations": ["openai-compatible LLM", "postgres"],
+  "featuresExcludedToFitDeadline": [],
+  "riskOfDeveloperHelp": "low",
+  "fourteenDayBuildPlan": [
+    { "day": 1, "tasks": ["scaffold ingest + normalize"] },
+    { "day": 3, "tasks": ["wire extract/cluster LLM steps"] },
+    { "day": 5, "tasks": ["draft ideas + estimate build"] },
+    { "day": 8, "tasks": ["score + filter + persist"] },
+    { "day": 10, "tasks": ["ideas feed read path"] }
+  ],
+  "narrowingApplied": false
+}

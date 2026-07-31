@@ -25,18 +25,21 @@ model User {
 }
 
 model Research {
-  id                     String    @id @default(uuid())
-  userId                 String    @map("user_id")
-  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                     String        @id @default(uuid())
+  userId                 String        @map("user_id")
+  user                   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   title                  String
   topic                  String
   keywords               String[]
-  status                 String    @default("draft")
-  autoRefreshEnabled     Boolean   @default(true) @map("auto_refresh_enabled")
-  lastPipelineFinishedAt DateTime? @map("last_pipeline_finished_at")
-  createdAt              DateTime  @default(now()) @map("created_at")
-  updatedAt              DateTime  @updatedAt @map("updated_at")
+  status                 String        @default("draft")
+  autoRefreshEnabled     Boolean       @default(true) @map("auto_refresh_enabled")
+  lastPipelineFinishedAt DateTime?     @map("last_pipeline_finished_at")
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
   signals                Signal[]
+  painClusters           PainCluster[]
+  ideas                  Idea[]
+  pipelineRuns           PipelineRun[]
 
   @@index([userId])
   @@map("researches")
@@ -56,6 +59,90 @@ model Signal {
 
   @@index([researchId])
   @@map("signals")
+}
+
+/// Cluster of recurring pains from signals. SSOT: docs/DATABASE.md
+model PainCluster {
+  id            String   @id @default(uuid())
+  researchId    String   @map("research_id")
+  research      Research @relation(fields: [researchId], references: [id], onDelete: Cascade)
+  label         String
+  summary       String
+  frequencyHint String?  @map("frequency_hint")
+  /// MVP: jsonb uuid[] (join table post-MVP)
+  signalIds     Json     @default("[]") @map("signal_ids")
+
+  @@index([researchId])
+  @@map("pain_clusters")
+}
+
+/// Micro-SaaS idea candidate. Filled by pipeline (F5-03); no fill logic here.
+model Idea {
+  id                            String   @id @default(uuid())
+  researchId                    String   @map("research_id")
+  research                      Research @relation(fields: [researchId], references: [id], onDelete: Cascade)
+  /// candidate | recommended | narrowed | excluded
+  status                        String   @default("candidate")
+  primaryUser                   String?  @map("primary_user")
+  problem                       String?
+  inputDataType                 String?  @map("input_data_type")
+  mainAction                    String?  @map("main_action")
+  concreteResult                String?  @map("concrete_result")
+  payReason                     String?  @map("pay_reason")
+  oneJobTemplate                String?  @map("one_job_template")
+  oneJobScore                   Int?     @map("one_job_score")
+  aiBuildabilityScore           Int?     @map("ai_buildability_score")
+  firstSalePotential            Int?     @map("first_sale_potential")
+  estimatedBuildDays            Int?     @map("estimated_build_days")
+  opportunityScore              Int?     @map("opportunity_score")
+  /// low | medium | high
+  buildTimeConfidence           String?  @map("build_time_confidence")
+  mainTechnicalRisk             String?  @map("main_technical_risk")
+  requiredIntegrations          Json     @default("[]") @map("required_integrations")
+  featuresExcludedToFitDeadline Json     @default("[]") @map("features_excluded_to_fit_deadline")
+  /// low | medium | high
+  riskOfDeveloperHelp           String?  @map("risk_of_developer_help")
+  /// JSON array of { day, tasks[] }
+  fourteenDayBuildPlan          Json?    @map("fourteen_day_build_plan")
+  firstCustomerPersona          String?  @map("first_customer_persona")
+  whereToFindCustomers          String?  @map("where_to_find_customers")
+  painStatement                 String?  @map("pain_statement")
+  shortOffer                    String?  @map("short_offer")
+  primaryAcquisitionChannel     String?  @map("primary_acquisition_channel")
+  howToShowResult               String?  @map("how_to_show_result")
+  recommendedCta                String?  @map("recommended_cta")
+  simplePrice                   String?  @map("simple_price")
+  howToGetFirstPayment          String?  @map("how_to_get_first_payment")
+  continueCriteria              String?  @map("continue_criteria")
+  stopCriteria                  String?  @map("stop_criteria")
+  exclusionReasons              Json     @default("[]") @map("exclusion_reasons")
+  supportingSignalIds           Json     @default("[]") @map("supporting_signal_ids")
+  supportingClusterIds          Json     @default("[]") @map("supporting_cluster_ids")
+  scoreBreakdown                Json?    @map("score_breakdown")
+  createdAt                     DateTime @default(now()) @map("created_at")
+  updatedAt                     DateTime @updatedAt @map("updated_at")
+
+  /// Main feed list; DATABASE.md prefers partial WHERE status='recommended'
+  @@index([researchId, status, opportunityScore(sort: Desc)])
+  @@map("ideas")
+}
+
+/// One pipeline execution against a Research (system feed).
+model PipelineRun {
+  id          String    @id @default(uuid())
+  researchId  String    @map("research_id")
+  research    Research  @relation(fields: [researchId], references: [id], onDelete: Cascade)
+  /// queued | running | succeeded | failed
+  status      String    @default("queued")
+  /// initial | manual | scheduled
+  trigger     String
+  currentStep String?   @map("current_step")
+  error       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  finishedAt  DateTime? @map("finished_at")
+
+  @@index([researchId, createdAt(sort: Desc)])
+  @@map("pipeline_runs")
 }
 
 model Account {

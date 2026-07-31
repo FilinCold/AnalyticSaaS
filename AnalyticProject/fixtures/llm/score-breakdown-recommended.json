@@ -1,0 +1,47 @@
+{
+  "oneJob": {
+    "explainableInOneSentence": 100,
+    "singlePrimaryUser": 100,
+    "singleProblem": 100,
+    "singleMainScenario": 100,
+    "singleClearResult": 100,
+    "valueOnOneExample": 100,
+    "singleOfferLanding": 100,
+    "canDropSecondaryWithoutLosingValue": 100
+  },
+  "aiBuildability": {
+    "typicalArchitecture": 100,
+    "lowNonStandardCode": 100,
+    "goodServiceDocs": 100,
+    "fewIntegrations": 100,
+    "officialApisAvailable": 100,
+    "visuallyVerifiable": 100,
+    "easyErrorDiagnosis": 100,
+    "simpleDeploy": 100,
+    "managedServicesOk": 100,
+    "incrementalBuildPossible": 100,
+    "manualFallbackPossible": 100
+  },
+  "firstSale": {
+    "audienceConcentrated": 100,
+    "buyerIsDecisionMaker": 100,
+    "noLongApproval": 100,
+    "shortSalesCycle": 100,
+    "valueImmediate": 100,
+    "demoInMinutes": 100,
+    "dmOrSmallAdsStart": 100,
+    "noBrandRequired": 100,
+    "selfServiceOk": 100,
+    "paymentRightAfterLaunch": 100,
+    "negatives": {
+      "longEnterpriseCycle": false,
+      "multiPersonDecision": false,
+      "requiresImplementation": false,
+      "needsPersonalOnboarding": false,
+      "valueAppearsInMonths": false,
+      "highPriceNeedsApproval": false,
+      "audienceHardToFind": false,
+      "needsLargeUserBaseFirst": false
+    }
+  }
+}
