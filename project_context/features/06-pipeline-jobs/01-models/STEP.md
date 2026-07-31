@@ -1,6 +1,6 @@
 # Шаг F5-01 — Idea, PainCluster, PipelineRun
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend · Persistence  
 **Зависит от:** `01-bootstrap/02-prisma-postgres`, `03-research/01-model-crud`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F5-01) · **Фича:** `06-pipeline-jobs`
@@ -50,30 +50,33 @@ Prisma models + migration; схема соответствует DATABASE.md; б
 ## Файлы
 
 - `AnalyticProject/prisma/schema.prisma`
-- `AnalyticProject/prisma/migrations/`
+- `AnalyticProject/prisma/migrations/20260731120000_add_pipeline_domain/`
+- `AnalyticProject/src/domain/types.ts`
+- `AnalyticProject/src/domain/pipeline-models.test.ts`
 
 ## Тест-кейсы
 
 | # | Сценарий | Ожидание |
 |---|---|---|
-| T1 | migrate deploy clean DB | OK |
-| T2 | Create PipelineRun row in test | FK works |
-| T3 | Idea jsonb fields accept arrays | OK |
+| T1 | migrate deploy clean DB | ✅ OK |
+| T2 | Create PipelineRun row in test | ✅ FK works |
+| T3 | Idea jsonb fields accept arrays | ✅ OK |
 
 ## Критерии готовности (DoD)
 
-- [ ] Все поля DATABASE.md ideas present
-- [ ] `trigger`: initial|manual|scheduled
-- [ ] `status` run: queued|running|succeeded|failed
-- [ ] T1–T3
+- [x] Все поля DATABASE.md ideas present
+- [x] `trigger`: initial|manual|scheduled
+- [x] `status` run: queued|running|succeeded|failed
+- [x] T1–T3
 
 ## Как проверить
 
 ```bash
 npx prisma migrate deploy
 npx prisma validate
+npm test -- -t pipeline
 ```
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — Models PainCluster/Idea/PipelineRun; migrate `add_pipeline_domain`; `domain/types.ts`; T1–T3; lint/test(92)/build OK.

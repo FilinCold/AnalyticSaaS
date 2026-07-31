@@ -1,6 +1,6 @@
 # Подшаг F5-03.3 — Extract + cluster
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** 02-normalize-ingest
 
 ## Цель
@@ -17,9 +17,9 @@ LLM `extract_pains` + `cluster_pains`; persist `pain_clusters`.
 
 ## DoD
 
-- [ ] ≥1 cluster for fixture research
-- [ ] Mock fixture path works
+- [x] ≥1 cluster for fixture research
+- [x] Mock fixture path works
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — extract/cluster steps + fixtures; signalId remap for mock; clusterIdMap for draft.

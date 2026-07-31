@@ -9,8 +9,11 @@
 |---|---|---|
 | id | uuid PK | |
 | email | text unique | |
-| password_hash / auth provider ids | — | зависит от auth |
+| password_hash | text | Auth.js Credentials (bcrypt); JWT session — без PrismaAdapter |
+| name, email_verified, image | optional | Auth.js совместимость |
 | created_at | timestamptz | |
+
+Также Auth.js tables: `accounts`, `sessions`, `verification_tokens` (для Credentials почти не используются).
 
 ### researches
 | Column | Type | Notes |
@@ -32,7 +35,7 @@
 |---|---|---|
 | id | uuid PK | |
 | research_id | uuid FK | index |
-| source_type | text | `manual` \| `reddit` \| `hackernews` \| `rss` \| … (конкретный адаптер MVP — `OPEN_QUESTIONS`) |
+| source_type | text | MVP: `manual` \| `hackernews` \| `producthunt` \| `reddit` (`forum`+ — post-MVP) |
 | source_url | text null | |
 | raw_text | text | |
 | normalized_text | text null | |
@@ -91,7 +94,8 @@
 | score_breakdown | jsonb | детали критериев |
 | created_at, updated_at | timestamptz | |
 
-**Индекс основного списка:** `(research_id, status, opportunity_score DESC)` partial where status='recommended'.
+**Индекс основного списка:** `(research_id, status, opportunity_score DESC)`.  
+MVP: составной индекс без partial `WHERE status='recommended'` (Prisma limitation; фильтр status в query).
 
 ### pipeline_runs
 | Column | Type | Notes |

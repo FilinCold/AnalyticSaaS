@@ -4,7 +4,7 @@
 
 | Шаг | Папка | Статус |
 |---|---|---|
-| 01 | [01-recommended-list](./01-recommended-list/) | TODO |
-| 02 | [02-idea-card](./02-idea-card/) | TODO |
-| 03 | [03-excluded-list](./03-excluded-list/) | TODO |
-| 04 | [04-narrowed-list](./04-narrowed-list/) | TODO |
+| 01 | [01-recommended-list](./01-recommended-list/) | DONE |
+| 02 | [02-idea-card](./02-idea-card/) | DONE |
+| 03 | [03-excluded-list](./03-excluded-list/) | DONE |
+| 04 | [04-narrowed-list](./04-narrowed-list/) | DONE |

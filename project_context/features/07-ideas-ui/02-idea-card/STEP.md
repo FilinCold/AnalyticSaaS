@@ -1,6 +1,6 @@
 # Шаг F6-02 — Карточка идеи
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `01-recommended-list`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F6-02) · **Фича:** `07-ideas-ui`
@@ -9,9 +9,9 @@
 
 | # | Папка | Секция |
 |---|---|---|
-| a | [a-api-detail](./a-api-detail/STEP.md) | GET full idea API |
-| b | [b-onejob-scores](./b-onejob-scores/STEP.md) | One Job + скоры |
-| c | [c-build-sales](./c-build-sales/STEP.md) | Build + Sales блоки |
+| a | [a-api-detail](./a-api-detail/STEP.md) | GET full idea API — DONE |
+| b | [b-onejob-scores](./b-onejob-scores/STEP.md) | One Job + скоры — DONE |
+| c | [c-build-sales](./c-build-sales/STEP.md) | Build + Sales блоки — DONE |
 
 ## Перед началом
 
@@ -40,19 +40,20 @@ Detail page со всеми обязательными полями; contract te
 | T2 | Contract/snapshot test | no missing keys |
 | T3 | continue/stop criteria visible | go/kill labels |
 | T4 | fourteenDayBuildPlan rendered | day/tasks |
-| T5 | Flow A step 7 | manual |
+| T5 | Flow A step 7 | ✅ owner |
 
 ## Критерии готовности (DoD)
 
-- [ ] Подшаги a,b,c DONE
-- [ ] T1–T5
+- [x] Подшаги a,b,c DONE
+- [x] T1–T5
 
 ## Как проверить
 
 ```bash
-npm test -- --grep idea-card
+npm test -- -t idea-card
 ```
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — a/b/c DONE; API + UI sections; **144** tests; T5 owner Flow A step 7.
+- `2026-07-31` — Owner verify T5: карточка recommended (One Job / Скоры / Build).

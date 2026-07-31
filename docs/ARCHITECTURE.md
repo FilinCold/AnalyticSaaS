@@ -14,25 +14,26 @@
 [PostgreSQL via Prisma]     [Job runner] ──► [LLM provider]
 ```
 
-## Предлагаемый стек (решение-предложение, см. DECISIONS)
+## Предлагаемый стек (зафиксирован, см. DECISIONS)
 
 | Слой | Выбор | Почему |
 |---|---|---|
 | App | Next.js (App Router) + TypeScript | один репо, UI+API, удобно для AI-агента |
-| DB | PostgreSQL + Prisma | типичные схемы, миграции, managed (Neon/Supabase) |
-| Auth | **Auth.js** + email/password | solo user, Prisma adapter |
+| DB | PostgreSQL + Prisma | типичные схемы, миграции, managed (Neon) |
+| Auth | **Auth.js** + email/password (JWT, без PrismaAdapter) | solo user |
 | Jobs | **Inngest** | Vercel, cron, без Redis |
-| LLM | **OpenAI** `gpt-4o-mini` | structured output, mock в тестах |
-| Hosting | **Vercel** + **Neon** Postgres | простой деплой |
-| Adapters | HN + Product Hunt + Reddit | см. `DECISIONS.md` |
+| LLM | **OpenRouter** → `openai/gpt-4o-mini` (или прямой OpenAI); mock в тестах | pay-as-you-go |
+| Hosting | **Vercel** + **Neon** Postgres (целевой; локально brew/docker) | простой деплой |
+| Adapters | HN + Product Hunt + Reddit + manual | см. `DECISIONS.md` |
+| E2E | Playwright | Flow A на mock LLM |
 
 ## Слои
 
-1. **UI** — Research list/detail, Signals, Ideas list/card, Job status.
-2. **API** — REST/Route Handlers: CRUD research/signals, start pipeline, get ideas, rescore.
+1. **UI** — Ideas feed (primary) + idea card; Research list/detail (secondary); Pipeline status / banners.
+2. **API** — REST/Route Handlers: ideas feed/ingest/card/rescore, research/signals CRUD, analyze/pipeline-runs.
 3. **Domain** — чистые функции скоринга + оркестрация pipeline (без UI).
-4. **Adapters** — `ManualSignalAdapter`, `SourceAdapter` (один авто).
-5. **Jobs** — шаги pipeline как отдельные job-step с идемпотентностью.
+4. **Adapters** — `SourceAdapter` ×3 (HN/PH/Reddit) + mock + manual paste.
+5. **Jobs** — `pipeline.run`, `schedule-refresh`, `idea.rescore`, hello.
 6. **Persistence** — Prisma models (`DATABASE.md`).
 
 ## Границы
