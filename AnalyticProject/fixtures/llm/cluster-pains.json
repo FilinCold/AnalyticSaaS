@@ -1,0 +1,13 @@
+{
+  "clusters": [
+    {
+      "label": "Unstructured idea discovery",
+      "summary": "Founders drown in HN/Reddit without a filter for commercially testable micro-SaaS ideas.",
+      "frequencyHint": "high",
+      "signalIds": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000002"
+      ]
+    }
+  ]
+}

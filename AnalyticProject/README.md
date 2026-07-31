@@ -90,6 +90,42 @@ npm test -- -t job
 
 Optional env vars (production / Inngest Cloud): `INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY` — see `.env.example`.
 
+## LLM client (F5-02)
+
+Server-only wrapper under `src/lib/llm/`. **По умолчанию mock** (бесплатно, без ключей).
+
+### Рекомендуемый live-путь: OpenRouter (pay-as-you-go)
+
+Подходит, если нужен расход **только за токены** (без подписки ChatGPT) и удобная оплата баланса (в т.ч. из РФ — смотри актуальные методы на сайте OpenRouter).
+
+1. Зарегистрируйся на [openrouter.ai](https://openrouter.ai), пополни баланс.
+2. Создай API key.
+3. В `.env.local` (не коммить):
+
+```bash
+LLM_PROVIDER=openrouter
+LLM_API_KEY=sk-or-v1-...          # ключ OpenRouter
+LLM_MODEL=openai/gpt-4o-mini      # slug модели у OpenRouter
+# LLM_BASE_URL по умолчанию https://openrouter.ai/api/v1
+```
+
+4. Перезапусти `npm run dev`. Пока pipeline (F5-03) не подключён — live-ключ почти не тратится; тесты всегда на mock.
+
+Прямой OpenAI API тоже поддерживается: `LLM_PROVIDER=openai` + `LLM_MODEL=gpt-4o-mini` (без OpenRouter slug).
+
+```bash
+LLM_PROVIDER=mock npm test -- -t llm
+```
+
+**T3 — secrets must not ship to the client bundle:** never import `@/lib/llm` (or `LLM_API_KEY`) from Client Components / files with `'use client'`. Quick check:
+
+```bash
+# expect no matches under client components
+rg -n "from '@/lib/llm'|LLM_API_KEY|LLM_PROVIDER" src/components src/app --glob '*.tsx'
+```
+
+Fixtures: `fixtures/llm/*.json`.
+
 ## Auth (Auth.js)
 
 Email/password via Auth.js (NextAuth v5) + Prisma. Set `AUTH_SECRET` in `.env.local` (`openssl rand -base64 32`).
@@ -140,7 +176,8 @@ AnalyticProject/
 │   ├── components/    # AppHeader, LogoutButton
 │   ├── jobs/          # Inngest functions
 │   ├── domain/        # Domain logic (from F4)
-│   └── lib/           # prisma, inngest, auth helpers
+│   └── lib/           # prisma, inngest, auth, llm helpers
+├── fixtures/llm/      # Mock LLM JSON fixtures
 ├── docker-compose.yml
 ├── .env.example
 ├── eslint.config.mjs
@@ -156,6 +193,7 @@ AnalyticProject/
 - Prisma + PostgreSQL (F0-02+)
 - Inngest job runner (F0-03+)
 - Auth.js (NextAuth v5) + Credentials (F1-01+)
+- OpenAI LLM client + Mock (F5-02+)
 
 ## Documentation
 

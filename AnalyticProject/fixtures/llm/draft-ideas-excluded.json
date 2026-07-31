@@ -1,0 +1,14 @@
+{
+  "ideas": [
+    {
+      "clusterIds": ["cluster-excluded-1"],
+      "primaryUser": "enterprise procurement teams across subsidiaries",
+      "problem": "multi-year vendor consolidation with custom integrations",
+      "inputDataType": "internal ERP exports and SSO directories",
+      "mainAction": "orchestrate cross-org approval workflows",
+      "concreteResult": "a multi-tenant compliance platform with connectors",
+      "payReason": "reduces consultant spend on RFPs",
+      "oneJobTemplate": "For enterprise procurement teams who need vendor consolidation across subsidiaries, the product ingests ERP exports and orchestrates cross-org approvals so they get a multi-tenant compliance platform."
+    }
+  ]
+}
