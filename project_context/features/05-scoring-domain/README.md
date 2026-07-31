@@ -4,5 +4,5 @@
 
 | Шаг | Папка | Статус |
 |---|---|---|
-| 01 | [01-score-formulas](./01-score-formulas/) | TODO |
-| 02 | [02-narrowing-helper](./02-narrowing-helper/) | TODO |
+| 01 | [01-score-formulas](./01-score-formulas/) | **DONE** `2026-07-31` |
+| 02 | [02-narrowing-helper](./02-narrowing-helper/) | **DONE** `2026-07-31` |

@@ -1,6 +1,6 @@
 # Шаг F5-03 — Pipeline steps wire-up
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend · Jobs  
 **Зависит от:** F3-01, F4-01, F4-02, F5-01, F5-02, F0-03  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F5-03) · **Фича:** `06-pipeline-jobs`
@@ -65,16 +65,17 @@ Job `pipeline.run` выполняет полный pipeline; на mock LLM + fix
 
 ## Критерии готовности (DoD)
 
-- [ ] Подшаги 1–6 DONE
-- [ ] T1–T7 green
-- [ ] Terminal status только `succeeded`/`failed` (не `done`)
+- [x] Подшаги 1–6 DONE
+- [x] T1–T7 green
+- [x] Terminal status только `succeeded`/`failed` (не `done`)
 
 ## Как проверить
 
 ```bash
-LLM_PROVIDER=mock npm test -- --grep pipeline
+LLM_PROVIDER=mock npm test -- -t pipeline
 ```
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — F5-03 wire-up DONE; `executePipelineRun` + Inngest; mock fixtures; **106** tests.
+- `2026-07-31` — Owner: UI без изменений (ожидаемо); закрыт → F5-04.

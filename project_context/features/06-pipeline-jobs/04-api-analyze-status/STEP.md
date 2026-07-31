@@ -1,6 +1,6 @@
 # Шаг F5-04 — API analyze + status
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `03-pipeline-wire-up`, `02-auth/02-api-protection`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F5-04) · **Фича:** `06-pipeline-jobs`
@@ -75,15 +75,15 @@ POST analyze enqueue `pipeline.run`; GET status; UI кнопка «Обнови�
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T7
-- [ ] UI badge + button on research detail
+- [x] T1–T7
+- [x] UI badge + button on research detail
 
 ## Как проверить
 
 ```bash
-npm test -- --grep analyze
+npm test -- -t analyze
 ```
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — POST analyze + GET latest/[runId]; UI AnalyzeIdeasPanel + badge + poll 3s; T1–T7; **115** tests; lint/build OK.

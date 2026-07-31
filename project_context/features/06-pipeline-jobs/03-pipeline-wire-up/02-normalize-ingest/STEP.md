@@ -1,6 +1,6 @@
 # Подшаг F5-03.2 — Ingest + normalize
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** 01-orchestrator-shell
 
 ## Цель
@@ -19,9 +19,9 @@ Steps `ingest` (optional) + `normalize`: обновить `signals.normalized_te
 
 ## DoD
 
-- [ ] normalized_text populated for all signals
-- [ ] 0 signals → run fails with clear error
+- [x] normalized_text populated for all signals
+- [x] 0 signals → run fails with clear error
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — `normalizeSignalText` + steps ingest/normalize; T2 0 signals → failed (RU message).

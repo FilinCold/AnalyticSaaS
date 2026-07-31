@@ -1,6 +1,6 @@
 # Шаг F5-06 — Scheduled refresh (3 дня)
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend + Frontend  
 **Зависит от:** `04-api-analyze-status`, `01-bootstrap/03-job-runner-skeleton`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F5-06) · **Фича:** `06-pipeline-jobs`
@@ -65,9 +65,9 @@ Edge: `last_pipeline_finished_at IS NULL` AND research age > 3 days — include 
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T4 automated
-- [ ] UI date label
-- [ ] Flow A2 documented in test or manual QA
+- [x] T1–T4 automated
+- [x] UI date label
+- [x] Flow A2 documented in test or manual QA
 
 ## Как проверить
 
@@ -77,4 +77,4 @@ npm test -- --grep scheduled
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — `runScheduleRefresh` + Inngest cron `0 3 * * *` + event `research/schedule-refresh`; dev `POST /api/dev/cron/schedule-refresh`; UI date + AutoRefreshToggle; T1–T4 + Flow A2 note; **128** tests; lint/build OK.

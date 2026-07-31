@@ -1,6 +1,6 @@
 # Шаг F7-01 — Edit narrowing + rescore
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `07-ideas-ui/02-idea-card`, `05-scoring-domain/02-narrowing-helper`, `06-pipeline-jobs/03-pipeline-wire-up`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F7-01) · **Фича:** `08-narrow-rescore`
@@ -70,8 +70,8 @@
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T5
-- [ ] Job registered in runner
+- [x] T1–T4 (T5 owner Flow C)
+- [x] Job registered in runner
 
 ## Как проверить
 
@@ -81,4 +81,4 @@ npm test -- --grep rescore
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — PATCH narrowing + heuristic days (−2/feature); sync POST rescore (TimeFit/Opportunity/filter); Inngest `idea-rescore`; UI NarrowingEditForm; **167** tests; T5 ⏳ owner.

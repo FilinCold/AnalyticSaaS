@@ -1,6 +1,6 @@
 # Шаг F8-01 — E2E happy path
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** QA  
 **Зависит от:** F1–F7 (все фичи 02–08)  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F8-01) · **Фича:** `09-vertical-slice-qa`
@@ -14,7 +14,7 @@
 
 ## Цель
 
-Playwright (или аналог) автоматизирует Flow A на mock LLM; **без** cron (Flow A2 — отдельный test optional).
+Playwright автоматизирует Flow A на mock LLM; **без** cron (Flow A2 — отдельный test optional).
 
 ## Не входит
 
@@ -38,14 +38,13 @@ Playwright (или аналог) автоматизирует Flow A на mock L
 
 ### 3. Test script `e2e/flow-a.spec.ts`
 
-Steps:
-1. Register or login
-2. Create research «возвраты в e-commerce»
-3. Add 3 manual signals (paste fixture texts)
-4. Wait for pipeline succeeded (poll UI badge, timeout 60s)
-5. Assert ≥1 recommended OR excluded tab with reasons
-6. Open first idea card — assert key fields visible (problem, oneJobTemplate, opportunityScore, continueCriteria)
-7. (Optional) narrowing rescore sub-flow
+Steps (после UX pivot — system feed, не create Research):
+1. Register (unique email или `E2E_USER_*`)
+2. `/ideas` → **Обновить ленту** (mock adapters ≥3 signals)
+3. Wait for pipeline succeeded (poll `GET /api/ideas` stats, timeout 90s)
+4. Assert ≥1 recommended OR excluded tab
+5. Open first idea card — problem, One Job, Opportunity, «Когда продолжать»
+6. (Optional) narrowing rescore — не в T1
 
 ### 4. CI note
 
@@ -55,20 +54,21 @@ Steps:
 
 - `test.setTimeout(120000)` for pipeline step
 - Retry 1 on CI optional
+- `resetSystemFeed` before run; Inngest sync delay; analyze fallback
 
 ## Тест-кейсы
 
 | # | Сценарий | Ожидание |
 |---|---|---|
-| T1 | Full flow-a.spec | green |
-| T2 | No LLM key in client bundle | build grep |
-| T3 | ACCEPTANCE_CRITERIA manual path | all steps covered |
+| T1 | Full flow-a.spec | ✅ green |
+| T2 | No LLM key in client bundle | ✅ vitest `LLM client bundle` |
+| T3 | ACCEPTANCE_CRITERIA manual path | ✅ covered (без cron) |
 
 ## Критерии готовности (DoD)
 
-- [ ] `npm run test:e2e` green locally
-- [ ] T1–T3
-- [ ] README e2e section
+- [x] `npm run test:e2e` green locally
+- [x] T1–T3
+- [x] README e2e section
 
 ## Как проверить
 
@@ -78,4 +78,4 @@ LLM_PROVIDER=mock npm run test:e2e
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — Playwright + `e2e/flow-a.spec.ts` (Flow A / system feed); reset helper; webServers Next+Inngest; T2 vitest bundle guard; README CI note; **169** unit + e2e green.

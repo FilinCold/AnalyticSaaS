@@ -1,6 +1,6 @@
 # Подшаг F5-03.1 — Orchestrator shell
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md)
 
 ## Цель
@@ -17,9 +17,9 @@ Job `pipeline.run` registration; create/update `PipelineRun`; step runner loop.
 
 ## DoD
 
-- [ ] Run row transitions queued→running
-- [ ] Failed step sets status=failed
+- [x] Run row transitions queued→running
+- [x] Failed step sets status=failed
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — `executePipelineRun` + Inngest `pipeline/run`; `runStep` fail → user-safe error.

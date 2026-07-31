@@ -22,6 +22,14 @@ alwaysApply: true
 
 При любом сомнении — спросить, не угадывать.
 
+## Прогресс / STATE — сразу после шага
+
+Как только шаг закрыт по DoD (тесты зелёные / критерии выполнены) — **сразу** обновить статус, не откладывая:
+1. `project_context/features/.../STEP.md` → статус DONE + журнал
+2. README фичи (`features/NN-…/README.md`)
+3. `project_context/04_STATE.md` — шапка, «Следующая задача», Фазы, Доска, Журнал, чеклист проверки
+4. `.cursor/rules/project-navigator.mdc` + `project_context/CLAUDE.md` — активный план / next step
+
 ## Codegraph
 
 Если в проекте есть `.codegraph/` — использовать `codegraph_explore` (MCP) **до** grep/find/Read при поиске кода. Одним вызовом возвращает исходники символов + пути вызовов.

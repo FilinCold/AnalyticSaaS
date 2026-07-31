@@ -34,7 +34,7 @@
 | 03 | [research](./03-research/) | 01-model-crud, 02-ui-list-create, **03-ideas-feed-shell** | — | F2 |
 | 04 | [signals](./04-signals/) | 01-manual-signal, 02-source-adapter | — | F3 |
 | 05 | [scoring-domain](./05-scoring-domain/) | 01-score-formulas, 02-narrowing-helper | — | F4 |
-| 06 | [pipeline-jobs](./06-pipeline-jobs/) | 01-models … 06-scheduled-refresh | **F5-03 (6)** | F5 |
+| 06 | [pipeline-jobs](./06-pipeline-jobs/) | 01-models … 06-scheduled-refresh | F5-03 (6) | F5 |
 | 07 | [ideas-ui](./07-ideas-ui/) | 01-recommended-list … 04-narrowed-list | F6-02 (3) | F6 |
 | 08 | [narrow-rescore](./08-narrow-rescore/) | 01-edit-rescore | — | F7 |
 | 09 | [vertical-slice-qa](./09-vertical-slice-qa/) | 01-e2e-happy-path, 02-docs-sync | — | F8 |
@@ -59,8 +59,12 @@
 | 02-auth | **DONE** |
 | 03-research | **DONE** (F2-01/02/03; home = Ideas feed) |
 | 04-signals | **DONE** (F3-01 + F3-02) |
-| 05–09 | TODO |
+| 05-scoring-domain | **DONE** (F4-01 + F4-02) |
+| 06-pipeline-jobs | **DONE** (F5-01…F5-06) |
+| 07-ideas-ui | **DONE** (F6-01…F6-04) |
+| 08-narrow-rescore | **DONE** (F7-01) |
+| 09-vertical-slice-qa | **DONE** (F8-01 + F8-02) |
 
 Детализация STEP.md: **DONE** (`2026-07-29`).  
 **Pivot UX** `2026-07-30`: лента идей, без обязательного user Research.  
-Текущий следующий: **F4-01** — [`05-scoring-domain/01-score-formulas`](./05-scoring-domain/01-score-formulas/STEP.md).
+**MVP:** **ACCEPTED** owner `2026-07-31`. Следующее — post-MVP трек (`docs/OPEN_QUESTIONS.md`).

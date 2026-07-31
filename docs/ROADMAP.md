@@ -377,6 +377,7 @@ F0 Bootstrap → F1 Auth → F2 Research (internal) + Feed shell
 - **Приёмка:** `04_STATE` = MVP DONE pending owner.
 - **Риски:** scope creep на ревью.
 - **Не входит:** post-MVP фичи.
+- **Статус:** DONE `2026-07-31` — docs sync + freeze; ждём owner acceptance.
 
 ---
 

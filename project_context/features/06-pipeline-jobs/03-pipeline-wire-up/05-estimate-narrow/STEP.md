@@ -1,6 +1,6 @@
 # Подшаг F5-03.5 — Estimate build + narrow
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** 04-draft-ideas
 
 ## Цель
@@ -16,9 +16,9 @@ LLM `estimate_build`; apply F4-02 narrowing; update build fields.
 
 ## DoD
 
-- [ ] Build fields populated on fixture idea
-- [ ] days>14 fixture triggers narrow or exclude per F4-02
+- [x] Build fields populated on fixture idea
+- [x] days>14 fixture triggers narrow or exclude per F4-02
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — estimate-build fixture (10d); over14 fixture + `applyNarrowing` path wired.

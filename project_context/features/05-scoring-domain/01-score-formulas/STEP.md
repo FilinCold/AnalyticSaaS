@@ -1,6 +1,6 @@
 # Шаг F4-01 — Формулы скоров
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend · Domain (pure)  
 **Зависит от:** — (параллельно F3)  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F4-01) · **Фича:** `05-scoring-domain`
@@ -67,14 +67,14 @@ Input: `ScoreBreakdown` (from LLM_CONTRACT). Output: int scores + `IdeaStatus`.
 
 ## Тест-кейсы
 
-| # | Сценарий | Ожидание |
-|---|---|---|
-| T1 | All criteria 100 | OneJob=100, passes filter |
-| T2 | OneJob avg 79 | excluded below_one_job |
-| T3 | 2 FirstSale negatives | −16 from raw |
-| T4 | days=15 | TimeFit=0, excluded |
-| T5 | Opportunity weights | manual calc match |
-| T6 | Empty oneJobTemplate | not recommended |
+| # | Сценарий | Ожидание | Статус |
+|---|---|---|---|
+| T1 | All criteria 100 | OneJob=100, passes filter | ✅ |
+| T2 | OneJob avg 79 | excluded below_one_job | ✅ |
+| T3 | 2 FirstSale negatives | −16 from raw | ✅ |
+| T4 | days=15 | TimeFit=0, excluded | ✅ |
+| T5 | Opportunity weights | manual calc match | ✅ |
+| T6 | Empty oneJobTemplate | not recommended | ✅ |
 
 ## Блокеры
 
@@ -82,14 +82,14 @@ Input: `ScoreBreakdown` (from LLM_CONTRACT). Output: int scores + `IdeaStatus`.
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T6 + ≥15 table cases total
-- [ ] `npm test -- --grep scoring` green
-- [ ] Комментарий в index: SSOT = AI_PIPELINE.md
+- [x] T1–T6 + ≥15 table cases total (34)
+- [x] `npm test -- -t scoring` green
+- [x] Комментарий в index: SSOT = AI_PIPELINE.md
 
 ## Как проверить
 
 ```bash
-npm test -- --grep scoring
+npm test -- -t scoring
 ```
 
 ## Как отметить выполнение
@@ -98,4 +98,4 @@ npm test -- --grep scoring
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — `src/domain/scoring/*`: OneJob/AI/FirstSale/TimeFit/Opportunity + filter; hard gate template→cap 59; 34 table cases; lint/test/build OK.

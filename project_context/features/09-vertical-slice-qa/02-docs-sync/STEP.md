@@ -1,6 +1,6 @@
 # Шаг F8-02 — Docs sync + freeze MVP
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Docs  
 **Зависит от:** `09-vertical-slice-qa/01-e2e-happy-path`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F8-02) · **Фича:** `09-vertical-slice-qa`
@@ -59,9 +59,9 @@
 
 ## Критерии готовности (DoD)
 
-- [ ] `04_STATE` = MVP DONE pending owner
-- [ ] T1–T2
-- [ ] No scope creep items added without NON_GOALS update
+- [x] `04_STATE` = MVP DONE pending owner
+- [x] T1–T2
+- [x] No scope creep items added without NON_GOALS update
 
 ## Как проверить
 
@@ -72,4 +72,4 @@ grep -r "TODO" docs/ project_context/features/ | head
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — Sync API/DATABASE/BACKGROUND/ARCHITECTURE/LLM_CONTRACT/MVP_SCOPE; DECISIONS § F7–F8 + MVP freeze; OPEN_QUESTIONS + ACCEPTANCE; root README + Known limitations; STATE/navigators → **MVP DONE pending owner**.

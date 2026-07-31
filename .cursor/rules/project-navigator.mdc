@@ -1,31 +1,27 @@
----
-description: Навигатор проекта AnalyticSaaS — агент читает при каждой сессии
-alwaysApply: true
----
-
 # AnalyticSaaS (AnalyticProject)
 
 ## Что за проект
 
-AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; реализация в `AnalyticProject/` (F0–F3-02).
+AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; реализация в `AnalyticProject/` (F0–F8 DONE).
 
 ## Стек и где что
 
 | Часть | Стек | Папка |
 |---|---|---|
-| Код | Next.js+TS+Prisma+PG+Auth.js+Inngest | `AnalyticProject/` |
+| Код | Next.js+TS+Prisma+PG+Auth.js+Inngest+OpenRouter | `AnalyticProject/` |
 | SSOT требований/архитектуры | — | `docs/` |
 | Kickoff/прогресс | — | `project_context/` |
 
 ## Активный план
 
-**Фаза:** F3-02 DONE (source adapters); следующий **F4-01 Score formulas**  
+**Фаза:** **MVP ACCEPTED** (`2026-07-31`) · next = **post-MVP** (выбор владельца)  
 **Статус:** [`project_context/04_STATE.md`](project_context/04_STATE.md)  
-**Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md)  
-**Pivot:** [`docs/DECISIONS.md`](docs/DECISIONS.md) § 2026-07-30
+**Очередь идей:** [`docs/OPEN_QUESTIONS.md`](docs/OPEN_QUESTIONS.md) § после MVP  
+**Pivot / LLM / Freeze:** [`docs/DECISIONS.md`](docs/DECISIONS.md)
 
 ## Правила
 
 - План → согласование → код. Без одобрения не реализовывать.
 - Не расширять scope за `docs/MVP_SCOPE.md` / `docs/NON_GOALS.md`.
 - Один факт — один файл. Прогресс — `04_STATE.md` + README фичи + `STEP.md`.
+- **Сразу после DoD шага** (тесты зелёные) — обновить статус: `STEP.md` → DONE, README фичи, шапка/`Фазы`/`Доска`/`Журнал` в `04_STATE.md`, `project-navigator.mdc` / `CLAUDE.md`. Не откладывать «на конец сессии».
