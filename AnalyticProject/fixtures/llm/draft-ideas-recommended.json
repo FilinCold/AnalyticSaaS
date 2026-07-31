@@ -1,0 +1,14 @@
+{
+  "ideas": [
+    {
+      "clusterIds": ["cluster-recommended-1"],
+      "primaryUser": "solo indie hacker",
+      "problem": "choosing a commercially testable micro-SaaS idea",
+      "inputDataType": "public forum signals",
+      "mainAction": "rank ideas by one-job + 14-day build fit",
+      "concreteResult": "a shortlist of recommended idea cards",
+      "payReason": "saves weeks of manual research before building",
+      "oneJobTemplate": "For a solo indie hacker who needs a commercially testable micro-SaaS idea, AnalyticSaaS takes public forum signals and ranks ideas by one-job fit and 14-day buildability so they get a shortlist of recommended cards they can start selling."
+    }
+  ]
+}

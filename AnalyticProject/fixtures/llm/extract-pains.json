@@ -1,0 +1,18 @@
+{
+  "pains": [
+    {
+      "signalId": "00000000-0000-4000-8000-000000000001",
+      "painStatement": "Solo founders waste hours scanning HN/Reddit for SaaS ideas without a structured filter.",
+      "audienceHint": "solo indie hackers building micro-SaaS",
+      "frequencyHint": "high",
+      "evidenceQuote": "I spend weekends reading Show HN and still pick the wrong idea."
+    },
+    {
+      "signalId": "00000000-0000-4000-8000-000000000002",
+      "painStatement": "Hard to tell if a pain is commercially testable in under two weeks.",
+      "audienceHint": "technical founders with AI coding agents",
+      "frequencyHint": "medium",
+      "evidenceQuote": "I need to know if I can ship and sell a slice in 14 days."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "estimatedBuildDays": 20,
+  "buildTimeConfidence": "medium",
+  "mainTechnicalRisk": "Too many secondary features for solo + AI agent",
+  "requiredIntegrations": ["stripe", "slack", "salesforce", "custom SSO"],
+  "featuresExcludedToFitDeadline": [],
+  "riskOfDeveloperHelp": "medium",
+  "fourteenDayBuildPlan": [
+    { "day": 1, "tasks": ["cut scope"] },
+    { "day": 7, "tasks": ["MVP slice only"] },
+    { "day": 14, "tasks": ["ship or exclude"] }
+  ],
+  "narrowingApplied": false
+}

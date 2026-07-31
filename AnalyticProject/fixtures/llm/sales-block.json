@@ -1,0 +1,13 @@
+{
+  "firstCustomerPersona": "Solo indie hacker with an AI coding agent",
+  "whereToFindCustomers": "Indie Hackers, HN Show, Twitter/X indie hacker circles",
+  "painStatement": "Weeks lost scanning forums without a commercial filter",
+  "shortOffer": "Rank micro-SaaS ideas by one-job fit and 14-day buildability",
+  "primaryAcquisitionChannel": "Indie Hackers + HN",
+  "howToShowResult": "Show 3 recommended idea cards from their feed",
+  "recommendedCta": "Refresh feed and open top idea",
+  "simplePrice": "$19/mo",
+  "howToGetFirstPayment": "Stripe checkout after first recommended shortlist",
+  "continueCriteria": "At least one user starts building a recommended idea within 14 days",
+  "stopCriteria": "No paid conversion after 30 days of active users"
+}
