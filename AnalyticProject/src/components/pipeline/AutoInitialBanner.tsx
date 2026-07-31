@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { PipelineStatusBadge } from '@/components/pipeline/PipelineStatusBadge';
 import type { PipelineRunStatus } from '@/domain/types';
@@ -27,14 +28,16 @@ function isActive(status: PipelineRunStatus | null | undefined) {
 }
 
 /**
- * Read-only banner on /ideas when system feed auto-initial run is active.
- * Hides after succeeded/failed.
+ * Banner on /ideas while system feed pipeline is active.
+ * Parent remounts via `key` when SSR run changes. On finish → router.refresh().
  */
 export function AutoInitialBanner({ researchId, initialRun }: Props) {
+  const router = useRouter();
   const [run, setRun] = useState<PipelineRunDto | null>(initialRun);
+  const refreshedForId = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!isActive(run?.status) || run?.trigger !== 'initial') return;
+    if (!isActive(run?.status)) return;
 
     const id = window.setInterval(() => {
       void (async () => {
@@ -49,6 +52,13 @@ export function AutoInitialBanner({ researchId, initialRun }: Props) {
           if (!response.ok) return;
           const latest = (await response.json()) as PipelineRunDto;
           setRun(latest);
+          if (
+            (latest.status === 'succeeded' || latest.status === 'failed') &&
+            refreshedForId.current !== latest.id
+          ) {
+            refreshedForId.current = latest.id;
+            router.refresh();
+          }
         } catch {
           // transient
         }
@@ -56,10 +66,9 @@ export function AutoInitialBanner({ researchId, initialRun }: Props) {
     }, POLL_MS);
 
     return () => window.clearInterval(id);
-  }, [researchId, run?.status, run?.trigger]);
+  }, [researchId, run?.status, router]);
 
-  const show =
-    run?.trigger === 'initial' && isActive(run.status);
+  const show = run != null && isActive(run.status);
 
   if (!show) return null;
 
@@ -69,7 +78,9 @@ export function AutoInitialBanner({ researchId, initialRun }: Props) {
       role="status"
     >
       <p className="text-sm text-sky-900 dark:text-sky-100">
-        Анализ запущен автоматически
+        {run.trigger === 'initial'
+          ? 'Анализ запущен автоматически'
+          : 'Идёт пересборка идей'}
       </p>
       <PipelineStatusBadge status={run.status} />
     </div>
