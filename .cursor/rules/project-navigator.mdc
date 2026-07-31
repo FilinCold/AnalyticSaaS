@@ -7,7 +7,7 @@ alwaysApply: true
 
 ## Что за проект
 
-AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; реализация в `AnalyticProject/` (F0–F2-03).
+AI-система поиска коммерчески проверяемых идей micro-SaaS (не product analytics). Для соло-создателя + AI coding agent. Доки готовы; реализация в `AnalyticProject/` (F0–F3-02).
 
 ## Стек и где что
 
@@ -19,7 +19,7 @@ AI-система поиска коммерчески проверяемых и�
 
 ## Активный план
 
-**Фаза:** F2-03 DONE (pivot: Ideas feed); следующий **F3-01 Signal model**  
+**Фаза:** F3-02 DONE (source adapters); следующий **F4-01 Score formulas**  
 **Статус:** [`project_context/04_STATE.md`](project_context/04_STATE.md)  
 **Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md)  
 **Pivot:** [`docs/DECISIONS.md`](docs/DECISIONS.md) § 2026-07-30

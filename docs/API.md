@@ -131,7 +131,24 @@ _Точные пути зависят от Auth.js / Clerk — зафиксир�
 
 ### `POST /api/researches/:researchId/signals/ingest`
 
-Запуск адаптера (F3-02). **Ответ 202:** `{ "jobId"?: string, "ingestedCount": number }` или sync `{ "ingestedCount": number }`.
+Запуск адаптеров для owned Research (F3-02). **Ответ 200:** `{ "ingestedCount": number, "bySource": {}, "errors": [] }`.
+
+### `POST /api/ideas/ingest`
+
+Primary для ленты: getOrCreate **system feed** Research → все адаптеры (HN/PH/Reddit). Auth required.
+
+**Ответ 200:**
+
+```json
+{
+  "researchId": "uuid",
+  "ingestedCount": 6,
+  "bySource": { "hackernews": 2, "producthunt": 2, "reddit": 2 },
+  "errors": [{ "sourceType": "producthunt", "message": "…" }]
+}
+```
+
+`ADAPTER_MODE=mock|live` (default mock). Live: PH/Reddit требуют env keys; без ключа — запись в `errors`, остальные адаптеры продолжают.
 
 ---
 
