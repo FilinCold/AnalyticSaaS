@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { AnalyzeIdeasPanel } from '@/components/pipeline/AnalyzeIdeasPanel';
+import { AutoRefreshToggle } from '@/components/research/AutoRefreshToggle';
 import { ManualSignalForm } from '@/components/signals/ManualSignalForm';
+import type { PipelineRunStatus } from '@/domain/types';
 import { getSessionUser } from '@/lib/auth/get-session';
 import { prisma } from '@/lib/prisma';
 
@@ -25,16 +28,22 @@ export default async function ResearchDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const signals = await prisma.signal.findMany({
-    where: { researchId: research.id },
-    orderBy: { capturedAt: 'desc' },
-    select: {
-      id: true,
-      rawText: true,
-      capturedAt: true,
-      sourceType: true,
-    },
-  });
+  const [signals, latestRun] = await Promise.all([
+    prisma.signal.findMany({
+      where: { researchId: research.id },
+      orderBy: { capturedAt: 'desc' },
+      select: {
+        id: true,
+        rawText: true,
+        capturedAt: true,
+        sourceType: true,
+      },
+    }),
+    prisma.pipelineRun.findFirst({
+      where: { researchId: research.id },
+      orderBy: { createdAt: 'desc' },
+    }),
+  ]);
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-12">
@@ -54,6 +63,12 @@ export default async function ResearchDetailPage({ params }: PageProps) {
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
           Статус: {research.status}
         </p>
+        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          Последнее обновление:{' '}
+          {research.lastPipelineFinishedAt
+            ? research.lastPipelineFinishedAt.toLocaleDateString('ru-RU')
+            : 'ещё не было'}
+        </p>
       </div>
 
       <section className="flex flex-col gap-3 text-sm">
@@ -71,6 +86,10 @@ export default async function ResearchDetailPage({ params }: PageProps) {
               : '—'}
           </p>
         </div>
+        <AutoRefreshToggle
+          researchId={research.id}
+          initialEnabled={research.autoRefreshEnabled}
+        />
       </section>
 
       <section className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
@@ -93,6 +112,26 @@ export default async function ResearchDetailPage({ params }: PageProps) {
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
           Появится в F6 — вкладки рекомендованные / суженные / исключённые.
         </p>
+        <div className="mt-4">
+          <AnalyzeIdeasPanel
+            researchId={research.id}
+            initialRun={
+              latestRun
+                ? {
+                    id: latestRun.id,
+                    status: latestRun.status as PipelineRunStatus,
+                    trigger: latestRun.trigger,
+                    currentStep: latestRun.currentStep,
+                    error: latestRun.error,
+                    createdAt: latestRun.createdAt.toISOString(),
+                    finishedAt: latestRun.finishedAt
+                      ? latestRun.finishedAt.toISOString()
+                      : null,
+                  }
+                : null
+            }
+          />
+        </div>
       </section>
     </main>
   );
