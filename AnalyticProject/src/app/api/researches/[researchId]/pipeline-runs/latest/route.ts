@@ -1,6 +1,7 @@
 import { requireAuth } from '@/lib/auth/get-session';
 import { toPipelineRunResponse } from '@/lib/pipeline/serialize';
 import { prisma } from '@/lib/prisma';
+import { SYSTEM_FEED_TOPIC } from '@/lib/signal/system-feed';
 
 type RouteContext = {
   params: Promise<{ researchId: string }>;
@@ -15,7 +16,10 @@ export async function GET(_request: Request, context: RouteContext) {
   const { researchId } = await context.params;
 
   const research = await prisma.research.findFirst({
-    where: { id: researchId, userId: authResult.id },
+    where: {
+      id: researchId,
+      OR: [{ userId: authResult.id }, { topic: SYSTEM_FEED_TOPIC }],
+    },
     select: { id: true },
   });
 
