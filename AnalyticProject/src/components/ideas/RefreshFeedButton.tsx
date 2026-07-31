@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type IngestResponse = {
   ingestedCount?: number;
@@ -9,6 +10,7 @@ type IngestResponse = {
 };
 
 export function RefreshFeedButton() {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +38,9 @@ export function RefreshFeedButton() {
         );
       }
       setMessage(parts.join('. '));
+      if (count > 0) {
+        router.refresh();
+      }
     } catch {
       setError('Сеть недоступна. Попробуйте ещё раз.');
     } finally {

@@ -10,12 +10,14 @@ function createPrismaClient() {
   });
 }
 
+/** Delegates that must exist; HMR may keep a client from an older generate. */
+const REQUIRED_DELEGATES = ['user', 'research', 'signal', 'idea', 'pipelineRun'] as const;
+
 function getPrismaClient(): PrismaClient {
   const existing = globalForPrisma.prisma;
-  // HMR can keep a client generated before User model existed.
   const needsRefresh =
     existing !== undefined &&
-    !('user' in (existing as object));
+    REQUIRED_DELEGATES.some((key) => !(key in (existing as object)));
 
   if (needsRefresh && existing) {
     void existing.$disconnect();
