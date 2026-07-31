@@ -4,6 +4,17 @@ import type { IdeaDetail } from '@/lib/idea/get-detail';
 
 type PlanDay = { day: number; tasks: string[] };
 
+const LEVEL_LABEL: Record<string, string> = {
+  low: 'низкая',
+  medium: 'средняя',
+  high: 'высокая',
+};
+
+function levelLabel(raw: string | null | undefined): string {
+  if (!raw) return '—';
+  return LEVEL_LABEL[raw.toLowerCase()] ?? raw;
+}
+
 function parsePlan(raw: unknown): PlanDay[] {
   if (!Array.isArray(raw)) return [];
   return raw
@@ -51,22 +62,22 @@ export function BuildSection({ idea }: { idea: IdeaDetail }) {
         id="build-heading"
         className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
       >
-        Build
+        Как собрать
       </h2>
       <dl className="grid gap-3 sm:grid-cols-2">
         <Field label="Уверенность в сроках">
-          {idea.buildTimeConfidence ?? '—'}
+          {levelLabel(idea.buildTimeConfidence)}
         </Field>
-        <Field label="Риск помощи разработчика">
-          {idea.riskOfDeveloperHelp ?? '—'}
+        <Field label="Риск, что понадобится разработчик">
+          {levelLabel(idea.riskOfDeveloperHelp)}
         </Field>
-        <Field label="Главный техриск">
+        <Field label="Главный технический риск">
           {idea.mainTechnicalRisk ?? '—'}
         </Field>
-        <Field label="Интеграции">
+        <Field label="Нужные интеграции">
           <StringList items={idea.requiredIntegrations} />
         </Field>
-        <Field label="Исключено под дедлайн">
+        <Field label="Убрано, чтобы уложиться в срок">
           <StringList items={idea.featuresExcludedToFitDeadline} />
         </Field>
       </dl>

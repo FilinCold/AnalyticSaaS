@@ -40,12 +40,12 @@ function ScoreBadge({ label, value, max = 100 }: ScoreItem) {
 
 export function ScoresSection({ idea }: { idea: IdeaDetail }) {
   const scores: ScoreItem[] = [
-    { label: 'One Job', value: idea.oneJobScore },
-    { label: 'AI Buildability', value: idea.aiBuildabilityScore },
-    { label: 'First Sale', value: idea.firstSalePotential },
-    { label: 'Opportunity', value: idea.opportunityScore },
+    { label: 'Одна задача', value: idea.oneJobScore },
+    { label: 'Сборка с AI', value: idea.aiBuildabilityScore },
+    { label: 'Первая продажа', value: idea.firstSalePotential },
+    { label: 'Итоговый потенциал', value: idea.opportunityScore },
     {
-      label: 'Дни сборки',
+      label: 'Срок, дни',
       value: idea.estimatedBuildDays,
       max: 14,
     },
@@ -57,7 +57,7 @@ export function ScoresSection({ idea }: { idea: IdeaDetail }) {
         id="scores-heading"
         className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
       >
-        Скоры
+        Оценки
       </h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {scores.map((s) => (
@@ -67,7 +67,7 @@ export function ScoresSection({ idea }: { idea: IdeaDetail }) {
       {idea.scoreBreakdown != null ? (
         <details className="rounded border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800">
           <summary className="cursor-pointer font-medium text-zinc-700 dark:text-zinc-300">
-            Разбивка скоров
+            Подробная разбивка оценок
           </summary>
           <pre className="mt-2 overflow-x-auto text-xs text-zinc-600 dark:text-zinc-400">
             {JSON.stringify(idea.scoreBreakdown, null, 2)}

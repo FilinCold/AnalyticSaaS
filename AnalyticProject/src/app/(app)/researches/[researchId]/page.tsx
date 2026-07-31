@@ -7,6 +7,7 @@ import { ManualSignalForm } from '@/components/signals/ManualSignalForm';
 import type { PipelineRunStatus } from '@/domain/types';
 import { getSessionUser } from '@/lib/auth/get-session';
 import { prisma } from '@/lib/prisma';
+import { labelResearchStatus } from '@/lib/research/status-labels';
 
 type PageProps = {
   params: Promise<{ researchId: string }>;
@@ -61,7 +62,7 @@ export default async function ResearchDetailPage({ params }: PageProps) {
           {research.title}
         </h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Статус: {research.status}
+          Статус: {labelResearchStatus(research.status)}
         </p>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
           Последнее обновление:{' '}
@@ -110,7 +111,11 @@ export default async function ResearchDetailPage({ params }: PageProps) {
       <section className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
         <h2 className="text-lg font-semibold tracking-tight">Идеи</h2>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Появится в F6 — вкладки рекомендованные / суженные / исключённые.
+          Идеи из этого исследования смотрите в общей{' '}
+          <Link href="/ideas" className="underline underline-offset-2">
+            ленте идей
+          </Link>
+          . Здесь — запуск и статус анализа.
         </p>
         <div className="mt-4">
           <AnalyzeIdeasPanel

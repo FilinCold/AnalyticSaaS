@@ -55,8 +55,8 @@ export default async function IdeasFeedPage({
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Идеи</h1>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Актуальные идеи micro-SaaS из открытых источников. Лента обновляется
-            каждые 3–5 дней.
+            Актуальные идеи небольших SaaS из открытых источников. Лента
+            обновляется каждые 3–5 дней.
           </p>
         </div>
         <RefreshFeedButton />

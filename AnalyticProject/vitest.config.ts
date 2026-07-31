@@ -8,6 +8,7 @@ config({ path: '.env' });
 export default defineConfig({
   test: {
     environment: 'node',
+    exclude: ['**/node_modules/**', '**/e2e/**', '**/.next/**'],
   },
   resolve: {
     alias: {

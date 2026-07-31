@@ -30,6 +30,17 @@ function formatCapturedAt(iso: string): string {
   return date.toLocaleString('ru-RU');
 }
 
+const SOURCE_TYPE_LABEL: Record<string, string> = {
+  manual: 'вручную',
+  hackernews: 'Hacker News',
+  producthunt: 'Product Hunt',
+  reddit: 'Reddit',
+};
+
+function labelSourceType(sourceType: string): string {
+  return SOURCE_TYPE_LABEL[sourceType] ?? sourceType;
+}
+
 export function ManualSignalForm({
   researchId,
   initialSignals,
@@ -125,7 +136,8 @@ export function ManualSignalForm({
       <ul className="flex flex-col gap-3">
         {signals.length === 0 ? (
           <li className="text-sm text-zinc-500 dark:text-zinc-400">
-            Пока нет сигналов. Добавьте вручную или позже через адаптеры.
+            Пока нет сигналов. Добавьте вручную или обновите ленту на странице
+            идей.
           </li>
         ) : (
           signals.map((signal) => (
@@ -137,7 +149,8 @@ export function ManualSignalForm({
                 {previewText(signal.rawText)}
               </p>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                {formatCapturedAt(signal.capturedAt)} · {signal.sourceType}
+                {formatCapturedAt(signal.capturedAt)} ·{' '}
+                {labelSourceType(signal.sourceType)}
               </p>
             </li>
           ))

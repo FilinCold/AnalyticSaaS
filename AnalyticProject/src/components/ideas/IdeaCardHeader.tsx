@@ -27,8 +27,8 @@ export function IdeaCardHeader({ idea }: { idea: IdeaDetail }) {
           role="status"
           className="rounded border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-300"
         >
-          Исключена — не прошла пороги рекомендованных. Причины ниже во вкладке
-          Provenance.
+          Исключена — не прошла пороги рекомендованных. Причины — в блоке
+          «Откуда взялась идея».
         </p>
       ) : null}
       {idea.status === 'narrowed' ? (
@@ -36,8 +36,8 @@ export function IdeaCardHeader({ idea }: { idea: IdeaDetail }) {
           role="status"
           className="rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100"
         >
-          Сужено системой — часть фич убрана, чтобы уложиться в 14 дней. Список
-          «Исключено под дедлайн» в блоке Build.
+          Сужено системой — часть функций убрана, чтобы уложиться в 14 дней.
+          Список «Убрано, чтобы уложиться в срок» — в блоке «Как собрать».
         </p>
       ) : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -50,7 +50,7 @@ export function IdeaCardHeader({ idea }: { idea: IdeaDetail }) {
           </span>
           {showOpportunity && idea.opportunityScore != null ? (
             <span className="rounded border border-zinc-300 px-2 py-0.5 text-xs tabular-nums text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
-              Opportunity {idea.opportunityScore}
+              Потенциал {idea.opportunityScore}
             </span>
           ) : null}
         </div>

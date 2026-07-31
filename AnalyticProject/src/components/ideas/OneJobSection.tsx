@@ -1,12 +1,12 @@
 import type { IdeaDetail } from '@/lib/idea/get-detail';
 
 const ATTRS: { key: keyof IdeaDetail; label: string }[] = [
-  { key: 'primaryUser', label: 'Primary user' },
-  { key: 'problem', label: 'Problem' },
-  { key: 'inputDataType', label: 'Input data type' },
-  { key: 'mainAction', label: 'Main action' },
-  { key: 'concreteResult', label: 'Concrete result' },
-  { key: 'payReason', label: 'Pay reason' },
+  { key: 'primaryUser', label: 'Кто пользователь' },
+  { key: 'problem', label: 'Проблема' },
+  { key: 'inputDataType', label: 'Тип входных данных' },
+  { key: 'mainAction', label: 'Главное действие' },
+  { key: 'concreteResult', label: 'Конкретный результат' },
+  { key: 'payReason', label: 'За что платят' },
 ];
 
 export function OneJobSection({ idea }: { idea: IdeaDetail }) {
@@ -16,7 +16,7 @@ export function OneJobSection({ idea }: { idea: IdeaDetail }) {
         id="one-job-heading"
         className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
       >
-        One Job
+        Одна задача
       </h2>
       <p className="text-sm leading-relaxed text-zinc-800 dark:text-zinc-200">
         {idea.oneJobTemplate?.trim() || '—'}

@@ -48,6 +48,7 @@ npm test -- prisma
 | `npm run build` | Production build |
 | `npm run start` | Start production server on port 3010 |
 | `npm test` | Vitest unit/smoke tests |
+| `npm run test:e2e` | Playwright Flow A (mock LLM; starts Next + Inngest) |
 | `npm run lint` | ESLint |
 | `npm run db:migrate` | Apply pending Prisma migrations (`migrate deploy`) |
 | `npm run db:generate` | Regenerate Prisma Client |
@@ -57,6 +58,29 @@ npm test -- prisma
 npm run lint && npm test && npm run build
 npm run dev
 ```
+
+## E2E (F8-01 Flow A)
+
+Playwright automates the manual happy path on **mock LLM** (no live keys, no cron / Flow A2).
+
+Prerequisites: Postgres with migrations applied, `.env.local` with `DATABASE_URL` + `AUTH_SECRET`.
+
+```bash
+npx playwright install chromium   # once
+LLM_PROVIDER=mock ADAPTER_MODE=mock npm run test:e2e
+```
+
+What `test:e2e` does:
+
+1. Starts Next (`:3010`) and Inngest Dev Server (`:8288`) unless already running (`reuseExistingServer` locally).
+2. Resets the shared **system feed** Research (signals / ideas / pipeline runs) so auto-initial can fire.
+3. Registers a user → `/ideas` → **Обновить ленту** (mock adapters) → waits for pipeline `succeeded` → opens an idea card and asserts One Job / Opportunity / «Когда продолжать».
+
+Optional env: `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `E2E_BASE_URL` (see `.env.example`).
+
+**CI note:** needs a Postgres service container (or reachable `DATABASE_URL`), Chromium install, and both webServers. Without a CI DB, run e2e only locally. GitHub Actions example shape: `services: postgres` + `npx playwright install --with-deps chromium` + `LLM_PROVIDER=mock npm run test:e2e`.
+
+T2 (no LLM secrets in client) lives in Vitest: `npm test -- -t "LLM client bundle"`.
 
 ## Background jobs (Inngest)
 
@@ -109,7 +133,7 @@ LLM_MODEL=openai/gpt-4o-mini      # slug модели у OpenRouter
 # LLM_BASE_URL по умолчанию https://openrouter.ai/api/v1
 ```
 
-4. Перезапусти `npm run dev`. Пока pipeline (F5-03) не подключён — live-ключ почти не тратится; тесты всегда на mock.
+4. Перезапусти `npm run dev`. Pipeline и rescore работают на mock без ключа; live — только с OpenRouter/OpenAI key.
 
 Прямой OpenAI API тоже поддерживается: `LLM_PROVIDER=openai` + `LLM_MODEL=gpt-4o-mini` (без OpenRouter slug).
 
@@ -161,27 +185,21 @@ curl -s http://localhost:3010/api/health
 ```
 AnalyticProject/
 ├── prisma/
-│   ├── schema.prisma  # User + Auth.js tables (F1+)
+│   ├── schema.prisma  # User, Research, Signal, Idea, PipelineRun, …
 │   └── migrations/
 ├── src/
-│   ├── auth.ts        # Auth.js config
-│   ├── app/           # App Router pages and API routes
-│   │   ├── (auth)/    # /login, /register
-│   │   ├── researches/
-│   │   └── api/
-│   │       ├── auth/         # register, login, logout, session, [...nextauth]
-│   │       ├── health/
-│   │       ├── inngest/
-│   │       └── dev/trigger-hello/
-│   ├── components/    # AppHeader, LogoutButton
-│   ├── jobs/          # Inngest functions
-│   ├── domain/        # Domain logic (from F4)
-│   └── lib/           # prisma, inngest, auth, llm helpers
+│   ├── auth.ts / auth.config.ts
+│   ├── app/           # App Router: (auth), (app)/ideas|researches, api/*
+│   ├── adapters/      # HN / PH / Reddit + mock
+│   ├── components/    # Ideas feed/card, research, pipeline UI
+│   ├── domain/        # scoring, pipeline helpers, types
+│   ├── jobs/          # pipeline.run, schedule-refresh, idea.rescore, hello
+│   └── lib/           # prisma, inngest, auth, llm, idea, pipeline, validation
+├── e2e/               # Playwright Flow A (F8-01)
 ├── fixtures/llm/      # Mock LLM JSON fixtures
 ├── docker-compose.yml
+├── playwright.config.ts
 ├── .env.example
-├── eslint.config.mjs
-├── vitest.config.ts
 └── package.json
 ```
 
@@ -189,15 +207,21 @@ AnalyticProject/
 
 - Next.js 16 (App Router) + TypeScript
 - Tailwind CSS v4
-- Vitest for tests
+- Vitest for unit/integration tests; Playwright for E2E (F8-01)
 - Prisma + PostgreSQL (F0-02+)
 - Inngest job runner (F0-03+)
-- Auth.js (NextAuth v5) + Credentials (F1-01+)
-- OpenAI LLM client + Mock (F5-02+)
+- Auth.js (NextAuth v5) + Credentials / JWT (F1-01+)
+- OpenRouter / OpenAI LLM client + Mock (F5-02+)
+
+## Known limitations
+
+См. root [`../README.md`](../README.md) § Known limitations. Кратко: нет production deploy; live LLM/adapters нуждаются в keys; Inngest Dev обязателен для pipeline; rescore без LLM; cron вне Playwright Flow A.
 
 ## Documentation
 
+- [Root README (quick start)](../README.md)
 - [Architecture](../docs/ARCHITECTURE.md)
 - [API contract](../docs/API.md)
+- [Acceptance](../docs/ACCEPTANCE_CRITERIA.md)
 - [Roadmap](../docs/ROADMAP.md)
 - [MVP scope](../docs/MVP_SCOPE.md)
