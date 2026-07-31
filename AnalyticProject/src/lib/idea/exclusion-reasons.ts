@@ -1,12 +1,12 @@
 /** Human-readable labels for Idea.exclusionReasons codes (F6-03). */
 
 export const EXCLUSION_REASON_LABELS = {
-  below_one_job: 'Ниже порога One Job',
-  below_ai: 'Ниже порога AI Buildability',
-  below_first_sale: 'Ниже порога First Sale',
-  exceeds_14_days: 'Больше 14 дней на сборку',
-  platform_idea: 'Платформенная идея',
-  missing_one_job_template: 'Нет шаблона One Job',
+  below_one_job: 'Слабая оценка «одна задача»',
+  below_ai: 'Слабая оценка «сборка с AI»',
+  below_first_sale: 'Слабая оценка «первая продажа»',
+  exceeds_14_days: 'Срок сборки больше 14 дней',
+  platform_idea: 'Слишком широкая платформенная идея',
+  missing_one_job_template: 'Нет формулировки одной задачи',
 } as const;
 
 export type KnownExclusionReason = keyof typeof EXCLUSION_REASON_LABELS;

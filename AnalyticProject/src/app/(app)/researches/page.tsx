@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { getSessionUser } from '@/lib/auth/get-session';
 import { prisma } from '@/lib/prisma';
+import { labelResearchStatus } from '@/lib/research/status-labels';
 
 function formatDate(value: Date): string {
   return value.toLocaleDateString('ru-RU', {
@@ -75,7 +76,7 @@ export default async function ResearchesPage() {
                     {research.topic}
                   </td>
                   <td className="px-2 py-3 text-zinc-700 dark:text-zinc-300">
-                    {research.status}
+                    {labelResearchStatus(research.status)}
                   </td>
                   <td className="px-2 py-3 text-zinc-700 dark:text-zinc-300">
                     {formatDate(research.createdAt)}
