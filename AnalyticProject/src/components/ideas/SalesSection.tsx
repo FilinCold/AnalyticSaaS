@@ -20,24 +20,24 @@ export function SalesSection({ idea }: { idea: IdeaDetail }) {
         id="sales-heading"
         className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
       >
-        Sales
+        Как продавать
       </h2>
       <dl className="grid gap-3 sm:grid-cols-2">
-        <Field label="Персона первого клиента">
+        <Field label="Первый клиент">
           {idea.firstCustomerPersona ?? '—'}
         </Field>
         <Field label="Где искать клиентов">
           {idea.whereToFindCustomers ?? '—'}
         </Field>
-        <Field label="Pain statement">{idea.painStatement ?? '—'}</Field>
-        <Field label="Короткий оффер">{idea.shortOffer ?? '—'}</Field>
+        <Field label="Формулировка боли">{idea.painStatement ?? '—'}</Field>
+        <Field label="Короткое предложение">{idea.shortOffer ?? '—'}</Field>
         <Field label="Канал привлечения">
           {idea.primaryAcquisitionChannel ?? '—'}
         </Field>
         <Field label="Как показать результат">
           {idea.howToShowResult ?? '—'}
         </Field>
-        <Field label="CTA">{idea.recommendedCta ?? '—'}</Field>
+        <Field label="Призыв к действию">{idea.recommendedCta ?? '—'}</Field>
         <Field label="Цена">{idea.simplePrice ?? '—'}</Field>
         <Field label="Как взять первую оплату">
           {idea.howToGetFirstPayment ?? '—'}

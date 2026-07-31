@@ -25,9 +25,9 @@ export function NarrowedIdeasTable({ ideas }: { ideas: NarrowedIdeaListRow[] }) 
           <tr className="border-b border-zinc-200 text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
             <th className="px-2 py-2 font-medium">Проблема</th>
             <th className="px-2 py-2 font-medium">Статус</th>
-            <th className="px-2 py-2 font-medium">Убрано под дедлайн</th>
-            <th className="px-2 py-2 font-medium">Opportunity</th>
-            <th className="px-2 py-2 font-medium">Дни</th>
+            <th className="px-2 py-2 font-medium">Убрано под срок</th>
+            <th className="px-2 py-2 font-medium">Потенциал</th>
+            <th className="px-2 py-2 font-medium">Срок, дни</th>
             <th className="px-2 py-2 font-medium">
               <span className="sr-only">Действие</span>
             </th>
