@@ -27,3 +27,9 @@ Thumbs.db
 
 # Optional local kit (not MVP app)
 STARTER_KIT/
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/

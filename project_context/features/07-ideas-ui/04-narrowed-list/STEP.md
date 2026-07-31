@@ -1,6 +1,6 @@
 # Шаг F6-04 — Список narrowed
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `01-recommended-list`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F6-04) · **Фича:** `07-ideas-ui`
@@ -21,39 +21,47 @@
 
 ## Подзадачи
 
-### 1. API `?status=narrowed`
+### 1. API `?status=narrowed` ✅
 
-### 2. UI tab «Суженные»
+- `listIdeasFeed('narrowed')` + `featuresExcludedToFitDeadline` в list serialize
+
+### 2. UI tab «Суженные» ✅
 
 - Badge «Сужено системой»
 - List excluded features prominently
 - CTA link: «Открыть карточку» → F6-02
 - Label clarity: не путать с «Исключённые»
+- Card banner «Сужено системой»
 
-### 3. Tests
+### 3. Tests ✅
 
 - narrowed visible only in this tab
 - recommended not duplicated here
 
 ## Тест-кейсы
 
-| # | Сценарий | Ожидание |
+| # | Сценарий | Статус |
 |---|---|---|
-| T1 | narrowed idea | in tab, features shown |
-| T2 | recommended | not in narrowed tab |
-| T3 | Flow C step 1 | manual |
+| T1 | narrowed idea | ✅ in tab, features shown (API + UI) |
+| T2 | recommended | ✅ not in narrowed tab |
+| T3 | Flow C step 1 | ⏳ owner browser |
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T3
-- [ ] Three tabs work: Рекомендованные / Суженные / Исключённые
+- [x] T1–T2
+- [ ] T3 owner Flow C
+- [x] Three tabs work: Рекомендованные / Суженные / Исключённые
 
 ## Как проверить
 
 ```bash
-npm test -- --grep narrowed
+cd AnalyticProject
+npm test -- -t "narrowed|T1 narrowed|T2 narrowed"
+npm run lint && LLM_PROVIDER=mock npm test && npm run build
 ```
+
+**Браузер:** `/ideas?tab=narrowed` → features chips + badge; карточка narrowed → banner «Сужено системой».
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — DONE: list serialize features; `NarrowedIdeasTable`; tab wire; card banner; **157** tests.

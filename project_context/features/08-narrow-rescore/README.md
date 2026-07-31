@@ -4,4 +4,4 @@
 
 | Шаг | Папка | Статус |
 |---|---|---|
-| 01 | [01-edit-rescore](./01-edit-rescore/) | TODO |
+| 01 | [01-edit-rescore](./01-edit-rescore/) | **DONE** |

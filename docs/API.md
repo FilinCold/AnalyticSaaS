@@ -1,8 +1,8 @@
 # API — контракт REST MVP
 
-> Реализация: Next.js Route Handlers в `AnalyticProject/app/api/`.  
+> Реализация: Next.js Route Handlers в `AnalyticProject/src/app/api/`.  
 > Все пути относительны к origin приложения.  
-> Auth: session cookie (после F1). Аноним → `401` на защищённых маршрутах.
+> Auth: Auth.js Credentials + JWT session cookie. Аноним → `401` на защищённых API / redirect login на страницах.
 
 ## Общие правила
 
@@ -10,7 +10,7 @@
 |---|---|
 | Content-Type | `application/json` |
 | ID | UUID v4 в path |
-| Ошибки | `{ "error": string, "code"?: string }` |
+| Ошибки | `{ "error": string, "code"?: string, "hint"?: string }` |
 | Ownership | **Pivot 2026-07-30:** Ideas лента — общий каталог для любого auth user. Research/Signal/Run: system feed (internal) или ownership `userId` на secondary CRUD; чужой user research → `404` |
 | Пагинация | MVP: без пагинации; feed list возвращает все recommended (лимит позже) |
 
@@ -18,13 +18,15 @@
 
 | Код | Когда |
 |---|---|
-| 200 | Успешный GET/PATCH |
+| 200 | Успешный GET/PATCH/POST (ingest, rescore) |
 | 201 | Успешный POST create |
+| 202 | Analyze принят в очередь |
 | 400 | Валидация тела/query |
 | 401 | Нет сессии |
 | 404 | Ресурс не найден или не принадлежит пользователю |
-| 409 | Конфликт: duplicate pipeline run, cooldown manual analyze |
+| 409 | Конфликт: duplicate pipeline run, cooldown manual analyze, rescore during active run |
 | 422 | Семантическая ошибка (пустой research без сигналов для analyze) |
+| 502 | Очередь Inngest недоступна (локально без `inngest:dev`) |
 
 ---
 
@@ -38,7 +40,7 @@
 | GET | `/api/auth/session` | — | `{ user: { id, email } }` \| `401` | F1-01 |
 | GET | `/api/me` | — | `{ user: { id, email } }` \| `401` | F1-02 |
 
-_Точные пути зависят от Auth.js / Clerk — зафиксировать в журнале F1-01._
+Также: `GET|POST /api/auth/[...nextauth]` (Auth.js internal).
 
 ---
 
@@ -150,6 +152,8 @@ Primary для ленты: getOrCreate **system feed** Research → все ад�
 
 `ADAPTER_MODE=mock|live` (default mock). Live: PH/Reddit требуют env keys; без ключа — запись в `errors`, остальные адаптеры продолжают.
 
+После успешного ingest сервер вызывает `maybeTriggerInitialPipeline` (trigger=`initial`, только если ещё не было initial run). Повторный ingest **не** запускает manual pipeline — для повторного анализа: `POST …/analyze` или UI «Обновить идеи» на research detail.
+
 ---
 
 ## Pipeline (F5)
@@ -203,32 +207,11 @@ Primary для ленты: getOrCreate **system feed** Research → все ад�
 
 ---
 
-## Ideas (F2-03 stub / F6)
+## Ideas (F6)
 
 > Primary UX. Auth required. Каталог платформы (system feed), не per-user isolation.
 
 ### `GET /api/ideas` (лента)
-
-**Query:** `status=recommended|narrowed|excluded|candidate` (default `recommended`).
-
-**Ответ 200:**
-
-```json
-{
-  "ideas": [ /* как ниже */ ],
-  "stats": {
-    "recommendedCount": 0,
-    "narrowedCount": 0,
-    "excludedCount": 0,
-    "lastPipelineFinishedAt": "ISO8601|null"
-  }
-}
-```
-
-F2-03: допускается stub `{ ideas: [], stats: {…zeros} }`.  
-F6: реальные данные + пороги.
-
-### `GET /api/researches/:researchId/ideas` (secondary / internal)
 
 **Query:** `status=recommended|narrowed|excluded|candidate` (default `recommended`).
 
@@ -247,13 +230,22 @@ F6: реальные данные + пороги.
       "firstSalePotential": 75,
       "estimatedBuildDays": 12,
       "opportunityScore": 82,
-      "exclusionReasons": []
+      "exclusionReasons": [],
+      "featuresExcludedToFitDeadline": []
     }
-  ]
+  ],
+  "stats": {
+    "recommendedCount": 0,
+    "narrowedCount": 0,
+    "excludedCount": 0,
+    "lastPipelineFinishedAt": "ISO8601|null"
+  }
 }
 ```
 
-Сортировка: `opportunityScore DESC` для `recommended`.
+Сортировка: `opportunityScore DESC` для `recommended`. Данные — из system feed Research.
+
+> **Не в MVP:** `GET /api/researches/:researchId/ideas` — secondary list по research не реализован; UI ленты читает только `GET /api/ideas`.
 
 ### `GET /api/ideas/:ideaId`
 
@@ -275,12 +267,19 @@ F6: реальные данные + пороги.
 }
 ```
 
-**Ответ 202:** `{ "rescoreJobId"?: string }` или sync updated idea.
+Validation: features — array ≤20 строк (1–200 символов); optional strings ≤500.
+
+**Эвристика дней (MVP, без LLM):** `baseline = currentDays + 2×prevExcluded.length`; `newDays = max(1, baseline − 2×nextExcluded.length)`.
+
+**Ответ 200:** обновлённая карточка идеи (days + narrowing fields). Status не меняется — нужен POST rescore.
 
 ### `POST /api/ideas/:ideaId/rescore`
 
-Явный пересчёт после PATCH. Enqueue `idea.rescore`.
+Лёгкий пересчёт одной идеи: TimeFit → Opportunity + `applyRecommendedFilter` (скоры OneJob/AI/FirstSale сохраняются). Sync 200 + карточка.
 
+Активный `pipeline.run` (queued/running) на том же research → **409**.
+
+Job `idea.rescore` зарегистрирован в Inngest (`idea/rescore`); POST выполняет sync и зеркалит event.
 ---
 
 ## Health (F0)
@@ -291,6 +290,16 @@ F6: реальные данные + пороги.
 
 ---
 
+## Inngest + Dev-only
+
+| Метод | Путь | Назначение |
+|---|---|---|
+| ALL | `/api/inngest` | Inngest serve endpoint (не вызывается из UI) |
+| POST | `/api/dev/trigger-hello` | Dev: hello job (`NODE_ENV=development`) |
+| POST | `/api/dev/cron/schedule-refresh` | Dev: прямой запуск schedule-refresh logic |
+
+---
+
 ## Что не в MVP API
 
-WebSocket статуса pipeline; export PDF; billing; orgs; публичные share links.
+WebSocket статуса pipeline; export PDF; billing; orgs; публичные share links; `GET /api/researches/:id/ideas`.

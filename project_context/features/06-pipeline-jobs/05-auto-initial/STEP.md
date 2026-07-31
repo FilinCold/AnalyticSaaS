@@ -1,6 +1,6 @@
 # Шаг F5-05 — Автозапуск initial
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Full stack  
 **Зависит от:** `04-api-analyze-status`, `04-signals/01-manual-signal`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F5-05) · **Фича:** `06-pipeline-jobs`
@@ -51,24 +51,25 @@
 
 ## Тест-кейсы
 
-| # | Сценарий | Ожидание |
-|---|---|---|
-| T1 | First signal | initial run queued |
-| T2 | Zero signals | no run |
-| T3 | Second signal | no new initial |
-| T4 | Flow A step 4 manual | no required click |
+| # | Сценарий | Ожидание | Статус |
+|---|---|---|---|
+| T1 | First signal | initial run queued | ✅ |
+| T2 | Zero signals | no run | ✅ |
+| T3 | Second signal | no new initial | ✅ |
+| T4 | Flow A step 4 manual | no required click | ⏳ owner |
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T4
-- [ ] UI indicator works
+- [x] T1–T3 (+ prior initial / active skip)
+- [x] UI indicator works
+- [ ] T4 owner Flow A
 
 ## Как проверить
 
 ```bash
-npm test -- --grep initial
+npm test -- -t maybeTriggerInitialPipeline
 ```
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — `maybeTriggerInitialPipeline` real; T1–T3 + extras; banner research detail + `/ideas`; **120** tests.

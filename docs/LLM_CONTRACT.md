@@ -8,7 +8,7 @@
 
 | Параметр | MVP |
 |---|---|
-| Провайдер | Один (OpenAI или Anthropic — `OPEN_QUESTIONS`) |
+| Провайдер | **OpenRouter** (OpenAI-compatible) или прямой OpenAI; модель `openai/gpt-4o-mini` / `gpt-4o-mini` (`DECISIONS.md` § 2026-07-31) |
 | Формат | JSON Schema / structured output |
 | Температура | ≤ 0.3 для extract, draft, breakdown |
 | Секреты | Только server-side env; не в client bundle |
@@ -163,12 +163,20 @@
 
 | Фикстура | Назначение |
 |---|---|
-| `fixtures/llm/extract-pains.json` | F5-03 integration |
+| `fixtures/llm/extract-pains.json` | F5-03 extract |
+| `fixtures/llm/cluster-pains.json` | F5-03 cluster |
 | `fixtures/llm/draft-ideas-recommended.json` | E2E happy path |
 | `fixtures/llm/draft-ideas-excluded.json` | Flow B |
+| `fixtures/llm/estimate-build.json` | ≤14 days build |
+| `fixtures/llm/estimate-build-over14.json` | narrowing path |
+| `fixtures/llm/score-breakdown-recommended.json` | F4 thresholds pass |
+| `fixtures/llm/sales-block.json` | first-sale card fields |
 
-Mock provider читает fixture по `researchId` или env `LLM_FIXTURE_MODE=1`.
+Mock provider читает fixture по `opts.fixture` (или default / env `LLM_FIXTURE`).
+
+**Версии схем (код = SSOT runtime):** Zod в `AnalyticProject/src/lib/llm/schemas.ts` — `ExtractPainsResult`, `ClusterPainsResult`, `DraftIdeasResult`, `EstimateBuildResult`, `ScoreBreakdownResult`, `SalesBlockResult`. Расхождение с этим файлом → править код или этот документ.
 
 ## Не входит
 
 - Fine-tuning; RAG; embeddings; multi-provider fallback; streaming в UI.
+- LLM на user rescore (F7 — heuristic + F4 only).

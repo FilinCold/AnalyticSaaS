@@ -1,6 +1,6 @@
 # Шаг F5-02 — LLM client + JSON schemas
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Слой:** Backend  
 **Зависит от:** `01-bootstrap/01-app-scaffold`  
 **ROADMAP:** [`docs/ROADMAP.md`](../../../../docs/ROADMAP.md) (F5-02) · **Фича:** `06-pipeline-jobs`
@@ -9,7 +9,7 @@
 
 1. `docs/LLM_CONTRACT.md`
 2. `docs/AI_PIPELINE.md` § LLM usage
-3. `docs/OPEN_QUESTIONS.md` (LLM provider)
+3. `docs/OPEN_QUESTIONS.md` (LLM provider) — закрыто: OpenAI `gpt-4o-mini`
 
 ## Цель
 
@@ -33,9 +33,9 @@ interface LlmProvider {
 
 ### 2. Implementations
 
-- `OpenAiProvider` or `AnthropicProvider` — one chosen
+- `OpenAiProvider` — OpenAI-compatible structured output (`baseURL` для OpenRouter)
 - `MockLlmProvider` — reads fixtures from `fixtures/llm/`
-- Factory: `createLlmProvider()` from env `LLM_PROVIDER=mock|openai|anthropic`
+- Factory: `createLlmProvider()` from env `LLM_PROVIDER=mock|openai|openrouter|anthropic` (anthropic throws; **рекомендуется openrouter**)
 
 ### 3. Schemas (Zod)
 
@@ -44,7 +44,7 @@ Per `LLM_CONTRACT.md`:
 - `ClusterPainsResult`
 - `DraftIdeasResult`
 - `EstimateBuildResult`
-- `ScoreBreakdownResult`
+- `ScoreBreakdownResult` (full OneJob/AI/FirstSale criteria)
 - `SalesBlockResult`
 
 ### 4. Env
@@ -67,25 +67,26 @@ Per `LLM_CONTRACT.md`:
 | # | Сценарий | Ожидание |
 |---|---|---|
 | T1 | Mock extract pains | valid schema |
-| T2 | Schema reject bad shape | throw |
-| T3 | Bundle check: no LLM_KEY in client | manual/grep |
+| T2 | Schema reject bad shape / invalid JSON | `LlmRetriableError` |
+| T3 | Bundle check: no LLM_KEY in client | documented in README |
 
 ## Блокеры
 
-- [ ] LLM provider choice — можно начать с Mock-only, live позже
+- [x] LLM provider choice — OpenAI `gpt-4o-mini` (`DECISIONS.md` / `OPEN_QUESTIONS.md`)
 
 ## Критерии готовности (DoD)
 
-- [ ] T1–T2 green
-- [ ] All schemas from LLM_CONTRACT exist
-- [ ] T3 documented in README
+- [x] T1–T2 green
+- [x] All schemas from LLM_CONTRACT exist
+- [x] T3 documented in README
 
 ## Как проверить
 
 ```bash
-LLM_PROVIDER=mock npm test -- --grep llm
+LLM_PROVIDER=mock npm test -- -t llm
 ```
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — Mock + OpenAI provider, Zod schemas, fixtures, tests T1–T2; T3 в README; **F5-02 DONE**.
+- `2026-07-31` — OpenRouter gateway: `LLM_PROVIDER=openrouter` + `LLM_BASE_URL`; DECISIONS/README.

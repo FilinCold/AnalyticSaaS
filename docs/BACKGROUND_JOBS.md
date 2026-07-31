@@ -2,17 +2,19 @@
 
 ## Runner
 
-Inngest **или** BullMQ+Redis (выбор в `DECISIONS.md` / `OPEN_QUESTIONS.md`).
+**Inngest** (`DECISIONS.md` § 2026-07-29). BullMQ отклонён для MVP.
 
 ## Триггеры `pipeline.run` (SSOT)
 
 | Триггер | Когда | Кто инициирует |
 |---|---|---|
-| `initial` | Первый прогон Research после появления сигналов | система (авто) |
-| `manual` | Пользователь нажал «Обновить идеи» | пользователь |
-| `scheduled` | Прошло ≥3 календарных дня с `last_pipeline_finished_at` | cron/job |
+| `initial` | Первый прогон Research после появления сигналов | система (`maybeTriggerInitialPipeline` после ingest / manual signal) |
+| `manual` | Пользователь нажал «Обновить идеи» (research detail) | пользователь → `POST …/analyze` |
+| `scheduled` | Прошло ≥3 календарных дня с `last_pipeline_finished_at` | cron Inngest `0 3 * * *` |
 
-Все триггеры вызывают один и тот же job `pipeline.run` (+ опционально `signals.ingest_adapter` перед ним для scheduled/manual).
+> UI «Обновить ленту» = `POST /api/ideas/ingest` (адаптеры). Pipeline при этом стартует только как `initial` (если ещё не было), не как `manual`.
+
+Все триггеры вызывают один и тот же job `pipeline.run`.
 
 ## Job: `pipeline.run`
 
@@ -40,7 +42,7 @@ Inngest **или** BullMQ+Redis (выбор в `DECISIONS.md` / `OPEN_QUESTIONS.
 
 **Расписание:** ежедневно (например 03:00 UTC) — не каждую минуту.  
 **Действие:** найти Research где `auto_refresh_enabled = true` AND `last_pipeline_finished_at` старше 3 календарных дней AND нет активного run → enqueue `pipeline.run` с `trigger=scheduled`.  
-**Не делает:** глобальный краулинг чужих ниш без привязки к Research пользователя.
+**Не делает:** глобальный краулинг вне system feed Research (MVP: один platform feed).
 
 ## Job: `signals.ingest_adapter`
 
@@ -49,12 +51,18 @@ Inngest **или** BullMQ+Redis (выбор в `DECISIONS.md` / `OPEN_QUESTIONS.
 
 ## Job: `idea.rescore`
 
-**Триггер:** пользователь изменил поля сужения  
-**Действие:** estimate_build (light) + score + filter для одной idea.
+**Триггер:** пользователь изменил поля сужения (`PATCH …/narrowing` + `POST …/rescore`).  
+**Действие (MVP light, без LLM):**  
+1. Days уже обновлены на PATCH эвристикой (−2 дня / excluded feature, baseline = current + 2×prev).  
+2. Пересчёт TimeFit → Opportunity из сохранённых OneJob/AI/FirstSale.  
+3. `applyRecommendedFilter` для **одной** idea (статус/exclusionReasons).  
+
+Inngest: `idea/rescore` / function id `idea-rescore`. POST выполняет sync и зеркалит event.
 
 ## Что не делаем в фоне (MVP)
 
-- глобальный краулинг «всех ниш интернета» вне Research пользователя;
+- глобальный краулинг «всех ниш интернета» вне system feed;
 - рассылки;
 - автодеплой чужих продуктов;
-- интервал обновления ≠ 3 дня (в MVP фиксированно 3 дня, без настройки пользователем).
+- интервал обновления ≠ 3 дня (в MVP фиксированно 3 дня, без настройки пользователем);
+- LLM на `idea.rescore` (только heuristic days + pure F4).

@@ -1,6 +1,6 @@
 # Подшаг F5-03.6 — Score, filter, finish
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** 05-estimate-narrow
 
 ## Цель
@@ -19,9 +19,9 @@ LLM `score_breakdown` → F4 int scores → filter status → finish run.
 
 ## DoD
 
-- [ ] Full integration test T1 from parent STEP passes
-- [ ] recommended fixture has all 4 thresholds OR excluded with reasons
+- [x] Full integration test T1 from parent STEP passes
+- [x] recommended fixture has all 4 thresholds OR excluded with reasons
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — score+filter+finish; T1/T2/T4–T7 green; old ideas cleaned on success.

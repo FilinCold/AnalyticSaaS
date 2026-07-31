@@ -1,6 +1,6 @@
 # Подшаг F6-02b — One Job + скоры UI
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** a-api-detail
 
 ## Цель
@@ -16,8 +16,8 @@
 
 ## DoD
 
-- [ ] All Часть 2 fields visible for recommended fixture
+- [x] All Часть 2 fields visible for recommended fixture
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — page SSR + `IdeaCardHeader` / `OneJobSection` / `ScoresSection`; **DONE**.

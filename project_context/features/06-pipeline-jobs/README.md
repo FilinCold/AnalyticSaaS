@@ -4,11 +4,11 @@
 
 | Шаг | Папка | Статус |
 |---|---|---|
-| 01 | [01-models](./01-models/) | TODO |
-| 02 | [02-llm-client](./02-llm-client/) | TODO |
-| 03 | [03-pipeline-wire-up](./03-pipeline-wire-up/) (**6 подшагов**) | TODO |
-| 04 | [04-api-analyze-status](./04-api-analyze-status/) | TODO |
-| 05 | [05-auto-initial](./05-auto-initial/) | TODO |
-| 06 | [06-scheduled-refresh](./06-scheduled-refresh/) | TODO |
+| 01 | [01-models](./01-models/) | DONE |
+| 02 | [02-llm-client](./02-llm-client/) | DONE |
+| 03 | [03-pipeline-wire-up](./03-pipeline-wire-up/) (**6 подшагов**) | DONE |
+| 04 | [04-api-analyze-status](./04-api-analyze-status/) | DONE |
+| 05 | [05-auto-initial](./05-auto-initial/) | DONE |
+| 06 | [06-scheduled-refresh](./06-scheduled-refresh/) | DONE |
 
-**OPEN_QUESTIONS до шага 02:** LLM provider/model.
+**LLM:** OpenRouter (`openai/gpt-4o-mini`) + Mock (`DECISIONS.md` § 2026-07-31). **F5 закрыт.** Следующий: F6-01 recommended-list.

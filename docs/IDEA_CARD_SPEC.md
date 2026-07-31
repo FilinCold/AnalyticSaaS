@@ -1,7 +1,8 @@
 # IDEA_CARD_SPEC — обязательные поля карточки идеи
 
 > SSOT хранения: `docs/DATABASE.md` (таблица `ideas`).  
-> UI: F6-02. API: `GET /api/ideas/:id` (`docs/API.md`).
+> UI: F6-02. API: `GET /api/ideas/:id` (`docs/API.md`).  
+> F8-02: поля совпадают с Prisma `Idea` + serialize в `src/lib/idea/` (camelCase в JSON).
 
 ## Статусы
 

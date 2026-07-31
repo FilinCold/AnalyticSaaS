@@ -1,6 +1,6 @@
 # Подшаг F6-02c — Build + Sales UI
 
-**Статус:** TODO  
+**Статус:** DONE  
 **Родитель:** [../STEP.md](../STEP.md) · **После:** b-onejob-scores
 
 ## Цель
@@ -16,9 +16,9 @@
 
 ## DoD
 
-- [ ] Contract test T1 from parent passes
-- [ ] Plan renders multi-day
+- [x] Contract test T1 from parent passes
+- [x] Plan renders multi-day
 
 ## Журнал
 
-- _(пусто)_
+- `2026-07-31` — `BuildSection` / `SalesSection` / `ProvenanceSection`; UI T3–T4; **DONE**.

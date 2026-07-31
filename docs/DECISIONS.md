@@ -49,7 +49,7 @@
 |---|---|
 | Auth | **Auth.js** (NextAuth v5) + **email/password** (Credentials). Solo-пользователь (владелец). Magic link — не в MVP. OAuth — не в MVP. |
 | Job runner | **Inngest** (Vercel-native, cron встроен, без Redis). BullMQ — отклонён для MVP. |
-| LLM | **OpenAI API**, модель **`gpt-4o-mini`** (structured output, баланс цена/качество). Mock provider в тестах обязателен. |
+| LLM | **OpenAI API** / модель **`gpt-4o-mini`** → **уточнено 2026-07-31:** gateway **OpenRouter** (см. ниже). Mock в тестах обязателен. |
 | Hosting | **Vercel** (app) + **Neon** (managed PostgreSQL). |
 | Source adapters | **Расширение MVP (владелец):** минимум **3** авто-источника — **Hacker News**, **Reddit**, **Product Hunt**; далее форумы (конкретика TBD). Интерфейс `SourceAdapter` + реализации по одной. Manual paste остаётся. |
 | Порядок реализации адаптеров | 1) HN (Algolia, без ключа) → 2) Product Hunt → 3) Reddit (OAuth/app). Форумы — после трёх базовых. |
@@ -78,6 +78,42 @@
 - Уже сделанные F2-01 API + F2-02 UI: API оставить; UI list/create — **demoted** (не home); новый шаг **F2-03** — shell ленты `/ideas` + stats.
 
 **Не путать:** платформенная AI-лента идей ≠ маркетплейс/соцсеть чужих UGC-идей (`NON_GOALS.md`).
+
+## 2026-07-31 — LLM gateway: OpenRouter (pay-as-you-go)
+
+**Решение владельца:** для live LLM в MVP использовать **OpenRouter** как OpenAI-compatible gateway.
+
+| Параметр | Значение |
+|---|---|
+| Gateway | **OpenRouter** (`https://openrouter.ai/api/v1`) |
+| Модель по умолчанию | `openai/gpt-4o-mini` (slug OpenRouter) |
+| Оплата | **Баланс / токены** (не подписка ChatGPT Plus) |
+| Прямой OpenAI API | Опционально (`LLM_PROVIDER=openai`), если биллинг доступен |
+| Dev / CI | `LLM_PROVIDER=mock` + `fixtures/llm/` |
+| Env | `LLM_PROVIDER`, `LLM_API_KEY`, `LLM_MODEL`, опционально `LLM_BASE_URL` |
+
+Причина: удобная оплата за фактический расход токенов (в т.ч. из РФ); без абонентки «пока не пользуюсь». Код: тот же `OpenAiProvider` + `baseURL`.
+
+## 2026-07-31 — Impl freeze notes (F7–F8)
+
+| Тема | Решение |
+|---|---|
+| Rescore days | **Без LLM:** heuristic `baseline = currentDays + 2×prevExcluded.length`; `newDays = max(1, baseline − 2×nextExcluded.length)` (`API.md` / `BACKGROUND_JOBS.md`) |
+| E2E | **Playwright** Flow A на `LLM_PROVIDER=mock` + `ADAPTER_MODE=mock`; cron (Flow A2) — вне автоматизированного happy path |
+| Ideas list API | Только `GET /api/ideas` (system feed). `GET /api/researches/:id/ideas` **не реализован** и не в MVP |
+| Ideas index | Составной `(researchId, status, opportunityScore DESC)` без partial WHERE (Prisma MVP) |
+| Auth session | Auth.js Credentials + **JWT**; PrismaAdapter не используется (конфликт с `password_hash`) |
+
+## 2026-07-31 — MVP freeze (F8-02)
+
+Реализация vertical slice **F0–F8** закрыта в коде. Документация синхронизирована.  
+Статус продукта: **MVP ACCEPTED** (owner `2026-07-31`: «MVP ок»).  
+Post-MVP — только через `NON_GOALS.md` / `OPEN_QUESTIONS.md` + новое решение владельца.
+
+## 2026-07-31 — Owner acceptance
+
+Владелец подтвердил vertical slice на mock (липовая идея в ленте — ожидаемо для `LLM_PROVIDER=mock`).  
+Живые идеи (OpenRouter + live adapters) и production deploy — отдельные post-MVP треки.
 
 ## Разрешённые противоречия / уточнения
 
