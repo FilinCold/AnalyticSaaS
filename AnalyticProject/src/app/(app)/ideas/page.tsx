@@ -1,7 +1,11 @@
 import Link from 'next/link';
 
 import { RefreshFeedButton } from '@/components/ideas/RefreshFeedButton';
+import { AutoInitialBanner } from '@/components/pipeline/AutoInitialBanner';
+import type { PipelineRunStatus } from '@/domain/types';
 import { getSessionUser } from '@/lib/auth/get-session';
+import { prisma } from '@/lib/prisma';
+import { SYSTEM_FEED_TOPIC } from '@/lib/signal/system-feed';
 
 type IdeasStats = {
   recommendedCount: number;
@@ -23,6 +27,18 @@ export default async function IdeasFeedPage() {
     lastPipelineFinishedAt: null,
   };
 
+  const systemFeed = await prisma.research.findFirst({
+    where: { topic: SYSTEM_FEED_TOPIC },
+    select: { id: true },
+  });
+
+  const latestRun = systemFeed
+    ? await prisma.pipelineRun.findFirst({
+        where: { researchId: systemFeed.id },
+        orderBy: { createdAt: 'desc' },
+      })
+    : null;
+
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-12">
       <div>
@@ -32,6 +48,28 @@ export default async function IdeasFeedPage() {
           каждые 3–5 дней.
         </p>
       </div>
+
+      {systemFeed ? (
+        <AutoInitialBanner
+          key={`${latestRun?.id ?? 'none'}-${latestRun?.status ?? 'none'}-${latestRun?.createdAt?.toISOString() ?? ''}`}
+          researchId={systemFeed.id}
+          initialRun={
+            latestRun
+              ? {
+                  id: latestRun.id,
+                  status: latestRun.status as PipelineRunStatus,
+                  trigger: latestRun.trigger,
+                  currentStep: latestRun.currentStep,
+                  error: latestRun.error,
+                  createdAt: latestRun.createdAt.toISOString(),
+                  finishedAt: latestRun.finishedAt
+                    ? latestRun.finishedAt.toISOString()
+                    : null,
+                }
+              : null
+          }
+        />
+      ) : null}
 
       <section
         aria-label="Статистика ленты"
