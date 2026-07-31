@@ -20,9 +20,9 @@ AI-система поиска коммерчески проверяемых и�
 
 ## 🎯 Активный план
 
-**Фича:** F2-03 DONE (Ideas feed home) → следующий **F3-01 Signal model**  
+**Фича:** F3-02 DONE (source adapters → system feed) → следующий **F4-01 Score formulas**  
 **Статус:** [`project_context/04_STATE.md`](04_STATE.md)  
-→ Открой STATE, возьми первый `TODO`. STEP: `features/04-signals/01-manual-signal/STEP.md`.  
+→ Открой STATE, возьми первый `TODO`. STEP: `features/05-scoring-domain/01-score-formulas/STEP.md`.  
 **Pivot:** лента идей, не create Research — `docs/DECISIONS.md` § 2026-07-30.
 
 ## 🔒 Правила

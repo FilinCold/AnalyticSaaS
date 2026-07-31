@@ -36,9 +36,26 @@ model Research {
   lastPipelineFinishedAt DateTime? @map("last_pipeline_finished_at")
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
+  signals                Signal[]
 
   @@index([userId])
   @@map("researches")
+}
+
+model Signal {
+  id             String   @id @default(uuid())
+  researchId     String   @map("research_id")
+  research       Research @relation(fields: [researchId], references: [id], onDelete: Cascade)
+  sourceType     String   @default("manual") @map("source_type")
+  sourceUrl      String?  @map("source_url")
+  rawText        String   @map("raw_text")
+  normalizedText String?  @map("normalized_text")
+  authorHint     String?  @map("author_hint")
+  capturedAt     DateTime @map("captured_at")
+  metadata       Json     @default("{}")
+
+  @@index([researchId])
+  @@map("signals")
 }
 
 model Account {
