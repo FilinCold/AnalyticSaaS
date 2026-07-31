@@ -1,19 +1,24 @@
 import { requireAuth } from '@/lib/auth/get-session';
+import { listIdeasFeed, parseIdeaFeedStatus } from '@/lib/idea/list-feed';
 
-/** F2-03 stub — empty feed until F5/F6 populate ideas. */
-export async function GET() {
+export async function GET(request: Request) {
   const authResult = await requireAuth();
   if (authResult instanceof Response) {
     return authResult;
   }
 
-  return Response.json({
-    ideas: [],
-    stats: {
-      recommendedCount: 0,
-      narrowedCount: 0,
-      excludedCount: 0,
-      lastPipelineFinishedAt: null,
-    },
-  });
+  const url = new URL(request.url);
+  const status = parseIdeaFeedStatus(url.searchParams.get('status'));
+  if (status == null) {
+    return Response.json(
+      {
+        error:
+          'Некорректный status. Допустимо: recommended, narrowed, excluded, candidate',
+      },
+      { status: 400 },
+    );
+  }
+
+  const feed = await listIdeasFeed(status);
+  return Response.json(feed);
 }

@@ -1,31 +1,39 @@
 import Link from 'next/link';
 
+import { ExcludedIdeasTable } from '@/components/ideas/ExcludedIdeasTable';
+import { IdeasFeedTabs, type IdeasFeedTab } from '@/components/ideas/IdeasFeedTabs';
+import { NarrowedIdeasTable } from '@/components/ideas/NarrowedIdeasTable';
+import { RecommendedIdeasTable } from '@/components/ideas/RecommendedIdeasTable';
 import { RefreshFeedButton } from '@/components/ideas/RefreshFeedButton';
 import { AutoInitialBanner } from '@/components/pipeline/AutoInitialBanner';
 import type { PipelineRunStatus } from '@/domain/types';
 import { getSessionUser } from '@/lib/auth/get-session';
+import { listIdeasFeed } from '@/lib/idea/list-feed';
 import { prisma } from '@/lib/prisma';
 import { SYSTEM_FEED_TOPIC } from '@/lib/signal/system-feed';
 
-type IdeasStats = {
-  recommendedCount: number;
-  narrowedCount: number;
-  excludedCount: number;
-  lastPipelineFinishedAt: string | null;
-};
+function parseTab(raw: string | string[] | undefined): IdeasFeedTab {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  if (value === 'narrowed' || value === 'excluded') return value;
+  return 'recommended';
+}
 
-export default async function IdeasFeedPage() {
+export default async function IdeasFeedPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const user = await getSessionUser();
   if (!user) {
     return null;
   }
 
-  const stats: IdeasStats = {
-    recommendedCount: 0,
-    narrowedCount: 0,
-    excludedCount: 0,
-    lastPipelineFinishedAt: null,
-  };
+  const params = (await searchParams) ?? {};
+  const tab = parseTab(params.tab);
+
+  const feedStatus =
+    tab === 'excluded' ? 'excluded' : tab === 'narrowed' ? 'narrowed' : 'recommended';
+  const feed = await listIdeasFeed(feedStatus);
 
   const systemFeed = await prisma.research.findFirst({
     where: { topic: SYSTEM_FEED_TOPIC },
@@ -39,14 +47,19 @@ export default async function IdeasFeedPage() {
       })
     : null;
 
+  const stats = feed.stats; // same counts for any status filter
+
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-12">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Идеи</h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Актуальные идеи micro-SaaS из открытых источников. Лента обновляется
-          каждые 3–5 дней.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Идеи</h1>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            Актуальные идеи micro-SaaS из открытых источников. Лента обновляется
+            каждые 3–5 дней.
+          </p>
+        </div>
+        <RefreshFeedButton />
       </div>
 
       {systemFeed ? (
@@ -90,15 +103,41 @@ export default async function IdeasFeedPage() {
         />
       </section>
 
-      <section className="flex flex-col items-start gap-3 rounded border border-dashed border-zinc-300 px-4 py-10 dark:border-zinc-700">
-        <p className="text-zinc-600 dark:text-zinc-400">
-          Идеи появятся здесь после анализа источников.
-        </p>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Создавать исследование не нужно — лента общая для платформы.
-        </p>
-        <RefreshFeedButton />
-      </section>
+      <IdeasFeedTabs
+        active={tab}
+        counts={{
+          recommended: stats.recommendedCount,
+          narrowed: stats.narrowedCount,
+          excluded: stats.excludedCount,
+        }}
+      />
+
+      {tab === 'recommended' ? (
+        feed.ideas.length > 0 ? (
+          <RecommendedIdeasTable ideas={feed.ideas} />
+        ) : (
+          <section className="flex flex-col items-start gap-3 rounded border border-dashed border-zinc-300 px-4 py-10 dark:border-zinc-700">
+            <p className="text-zinc-600 dark:text-zinc-400">
+              Нет рекомендованных идей
+            </p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              Идеи появятся здесь после анализа источников.
+            </p>
+            {stats.excludedCount > 0 ? (
+              <Link
+                href="/ideas?tab=excluded"
+                className="text-sm font-medium text-zinc-900 underline underline-offset-2 dark:text-zinc-100"
+              >
+                Посмотреть исключённые ({stats.excludedCount})
+              </Link>
+            ) : null}
+          </section>
+        )
+      ) : tab === 'excluded' ? (
+        <ExcludedIdeasTable ideas={feed.ideas} />
+      ) : (
+        <NarrowedIdeasTable ideas={feed.ideas} />
+      )}
 
       <p className="text-xs text-zinc-400">
         Служебно:{' '}
